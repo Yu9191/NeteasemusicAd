@@ -1,0 +1,24 @@
+{
+  "name": "netease-music-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "网易云音乐去广告 - 跨平台响应重写脚本 (Surge/QuanX/Loon)",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c && node -e \"require('fs').copyFileSync('dist/wyyad.js','wyyad.js')\"",
+    "build:dev": "rollup -c --configDev",
+    "build:watch": "rollup -c -w"
+  },
+  "dependencies": {
+    "@nsnanocat/util": "^2.6.11",
+    "crypto-js": "^4.2.0",
+    "pako": "^2.1.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.60.1"
+  }
+}
