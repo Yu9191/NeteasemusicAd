@@ -6,7 +6,11 @@
 
 https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.sgmodule
 
-### 其他平台（Loon / Stash / Shadowrocket / Quantumult X 等）
+### Quantumult X 远程重写
+
+https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.quanx.conf
+
+### 其他平台（Loon / Stash / Shadowrocket 等）
 
 请用 [Script-Hub](https://github.com/Script-Hub-Org/Script-Hub/wiki) 把上面的 `.sgmodule` 转换为目标平台格式后订阅。
 
