@@ -27,5 +27,8 @@ export function extractPath(url) {
  */
 export function isAeapiRequest($request) {
   const h = $request.headers ?? {};
-  return h["x-aeapi"] === "true" || h["X-Aeapi"] === "true";
+  for (const k of Object.keys(h)) {
+    if (k.toLowerCase() === "x-aeapi" && String(h[k]).toLowerCase() === "true") return true;
+  }
+  return false;
 }
