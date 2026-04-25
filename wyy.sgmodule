@@ -2,7 +2,7 @@
 #!desc= 全面净化 - 自定义Tab名称 - 伪VIP
 #!system= ios
 #!category= 网易云音乐
-#!arguments= 隐藏底部标签开关↓:--,发现:0,漫游:1,笔记:0,关注:1,首页自定义名称:0,我的自定义名称:0,漫游自定义名称:0,笔记自定义名称:0,发现自定义名称:0,隐藏顶部标签开关↓:--,AI写歌:0,活动Tab:0,隐藏首页卡片开关↓:--,问候语:1,每日推荐:0,推荐歌单:0,最近常听:0,音乐合伙人:0,雷达歌单:1,排行榜:0,推荐专属歌单:1,你的专属歌单:1,脚本伪vip:1,VIP等级:7,成长值:99999
+#!arguments= 隐藏底部标签开关↓:--,发现:0,漫游:1,笔记:0,关注:1,搜索:1,首页自定义名称:0,我的自定义名称:0,漫游自定义名称:0,笔记自定义名称:0,发现自定义名称:0,隐藏顶部标签开关↓:--,AI写歌:0,活动Tab:0,隐藏首页卡片开关↓:--,问候语:1,每日推荐:0,推荐歌单:0,最近常听:0,音乐合伙人:0,雷达歌单:1,排行榜:0,推荐专属歌单:1,你的专属歌单:1,脚本伪vip:1,VIP等级:7,成长值:99999
 #!arguments-desc= 底部Tab: 1=隐藏, 0=显示\n自定义名称: 留空则保持原名，填写则替换显示\n顶部Tab: 0=隐藏, 1=显示 (默认只保留音乐, 其余全部隐藏)\n首页卡片: 1=显示, 0=隐藏\nVIP等级: 1-7\n成长值: 默认99999
 #!date= 2026-04-24
 #!icon= https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png
@@ -15,7 +15,7 @@
 网易云音乐_伪VIP = type=http-response,pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/(music-vip-membership\/(client|front)\/vip\/info|vipnewcenter\/app\/resource\/newaccountpage|vip-center-bff\/(card\/entry\/list|float\/data)),requires-body=1,max-size=0,timeout=20,binary-body-mode=1,script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js, argument=VipEnabled={{{脚本伪vip}}}&VipLevel={{{VIP等级}}}&GrowthValue={{{成长值}}}
 
 # 底部 Tab (支持自定义名称)
-网易云音乐_Tab = type=http-response,pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/home\/framework\/tab,requires-body=1,max-size=0,timeout=20,binary-body-mode=1,script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js, argument=FX={{{发现}}}&MY={{{漫游}}}&DT={{{笔记}}}&GZ={{{关注}}}&SY_NAME={{{首页自定义名称}}}&WD_NAME={{{我的自定义名称}}}&MY_NAME={{{漫游自定义名称}}}&DT_NAME={{{笔记自定义名称}}}&FX_NAME={{{发现自定义名称}}}
+网易云音乐_Tab = type=http-response,pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/home\/framework\/tab,requires-body=1,max-size=0,timeout=20,binary-body-mode=1,script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js, argument=FX={{{发现}}}&MY={{{漫游}}}&DT={{{笔记}}}&GZ={{{关注}}}&SOU={{{搜索}}}&SY_NAME={{{首页自定义名称}}}&WD_NAME={{{我的自定义名称}}}&MY_NAME={{{漫游自定义名称}}}&DT_NAME={{{笔记自定义名称}}}&FX_NAME={{{发现自定义名称}}}
 
 # 顶部 Tab (支持自定义名称)
 网易云音乐_顶部Tab = type=http-response,pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/e?api\/link\/home\/framework\/top\/tab,requires-body=1,max-size=0,timeout=20,binary-body-mode=1,script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js, argument=AIXG={{{AI写歌}}}&HDTAB={{{活动Tab}}}

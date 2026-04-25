@@ -30,7 +30,7 @@ const DEFAULTS = {
   VipLevel: 7,
   GrowthValue: 99999,
 
-  FX: 0, MY: 1, DT: 0, GZ: 1,
+  FX: 0, MY: 1, DT: 0, GZ: 1, SOU: 1,
   MY_NAME: "", DT_NAME: "", FX_NAME: "", SY_NAME: "", WD_NAME: "",
 
   AIXG: 0, HDTAB: 0,

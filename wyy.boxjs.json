@@ -64,6 +64,7 @@
         "wyy_MY",
         "wyy_DT",
         "wyy_GZ",
+        "wyy_SOU",
         "wyy_SY_NAME",
         "wyy_WD_NAME",
         "wyy_MY_NAME",
@@ -104,6 +105,16 @@
         {
           "id": "wyy_GZ",
           "name": "关注",
+          "val": "1",
+          "type": "selects",
+          "items": [
+            { "key": "0", "label": "显示" },
+            { "key": "1", "label": "隐藏" }
+          ]
+        },
+        {
+          "id": "wyy_SOU",
+          "name": "搜索",
           "val": "1",
           "type": "selects",
           "items": [

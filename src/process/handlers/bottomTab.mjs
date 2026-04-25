@@ -8,7 +8,8 @@ const BOTTOM_TAB_NAMES = {
   MY: "漫游",
   DT: "笔记",
   FX: "发现",
-  GZ: "关注"
+  GZ: "关注",
+  SOU: "搜索"
 };
 
 /**
@@ -16,7 +17,7 @@ const BOTTOM_TAB_NAMES = {
  * Bottom tab filter and rename handler.
  *
  * 修改内容 / Modifications:
- * - 根据 `MY/DT/FX/GZ`（值为 1）从底部隐藏对应 Tab，并强制移除"搜索/关注"
+ * - 根据 `MY/DT/FX/GZ/SOU`（值为 1）从底部隐藏对应 Tab
  * - 至少保留首页一个 Tab，避免 UI 崩溃
  * - 应用自定义 Tab 名称：`SY_NAME` / `WD_NAME` / `MY_NAME` / `DT_NAME` / `FX_NAME`
  * - 发现页子 Tab 移除"直播"
@@ -29,7 +30,6 @@ export function bottomTab(s, { settings }) {
   const hideTabs = Object.keys(BOTTOM_TAB_NAMES)
     .filter(k => settings[k] === 1)
     .map(k => BOTTOM_TAB_NAMES[k]);
-  hideTabs.push("搜索", "关注");
 
   if (!s.data?.commonResourceList) return;
 
