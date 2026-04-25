@@ -158,12 +158,12 @@ export function decryptBody(body, _isAeapi) {
     errors.push(`plain: ${e?.message || e}`);
   }
 
-  // 全部失败：打印诊断信息
-  // All strategies failed: emit diagnostic info
-  Console.error(
-    `[WYY/Crypto] 解密失败 kind=${bodyKind} len=${u8.length}` +
-      ` httpUngzip=${httpUngzipped} head=${originalHead} | ${errors.join(" | ")}`
-  );
+  // 全部失败：把诊断信息挂到函数本身，调用方可读取后跟报错一起打印。
+  // All strategies failed: stash diagnostic info on the function itself so the caller
+  // can include it in its own error log (more reliable than separate Console.error calls).
+  decryptBody.lastError =
+    `kind=${bodyKind} len=${u8.length} httpUngzip=${httpUngzipped} head=[${originalHead}] | ${errors.join(" | ")}`;
+  Console.error(`[WYY/Crypto] 解密失败 ${decryptBody.lastError}`);
   return null;
 }
 

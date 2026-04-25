@@ -48,7 +48,7 @@ export async function Response($request, $response) {
 
   const s = decryptBody(rawBody);
   if (!s) {
-    Console.error(`[WYY] 解密失败: ${path}`);
+    Console.error(`[WYY] 解密失败: ${path} | ${decryptBody.lastError ?? "无诊断信息"}`);
     return $response;
   }
 
