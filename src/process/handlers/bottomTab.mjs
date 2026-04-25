@@ -30,13 +30,15 @@ const BOTTOM_TAB_NAMES = {
  */
 export function bottomTab(s, { settings }) {
   // 调试：打印当前生效的底部 Tab 设置 + API 返回的原始 title 列表
-  // Debug: print effective bottom-tab settings and the raw titles from the API response
-  Console.log(`[WYY/bottomTab] settings: ${JSON.stringify({
+  // 仅在 LogLevel=debug 时输出，用户可通过 $argument.LogLevel 或 BoxJS wyy_LogLevel 打开。
+  // Debug: print effective bottom-tab settings and the raw titles from the API response.
+  // Visible only when LogLevel=debug ($argument.LogLevel or BoxJS wyy_LogLevel).
+  Console.debug(`[WYY/bottomTab] settings: ${JSON.stringify({
     FX: settings.FX, MY: settings.MY, DT: settings.DT, GZ: settings.GZ, SOU: settings.SOU,
     SY_NAME: settings.SY_NAME, WD_NAME: settings.WD_NAME,
     MY_NAME: settings.MY_NAME, DT_NAME: settings.DT_NAME, FX_NAME: settings.FX_NAME
   })}`);
-  Console.log(`[WYY/bottomTab] titles: ${JSON.stringify((s.data?.commonResourceList ?? []).map(i => i.title))}`);
+  Console.debug(`[WYY/bottomTab] titles: ${JSON.stringify((s.data?.commonResourceList ?? []).map(i => i.title))}`);
 
   const hideTabs = Object.keys(BOTTOM_TAB_NAMES)
     .filter(k => settings[k] === 1)
