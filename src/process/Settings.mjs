@@ -49,6 +49,17 @@ const DEFAULTS = {
  */
 export function toInt(v, def) {
   if (v === undefined || v === null || v === "") return def;
+  // 真布尔（BoxJS boolean type 直接存 true/false）
+  // Real boolean (BoxJS `boolean` type stores actual true/false).
+  if (v === true) return 1;
+  if (v === false) return 0;
+  // 字符串布尔（Loon switch 注入的是 "true"/"false"，QX/Surge 也偶发）
+  // String booleans (Loon switch injects literal "true"/"false"; QX/Surge see them too).
+  if (typeof v === "string") {
+    const t = v.trim().toLowerCase();
+    if (t === "true") return 1;
+    if (t === "false") return 0;
+  }
   const n = parseInt(v, 10);
   return Number.isFinite(n) ? n : def;
 }
