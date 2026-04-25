@@ -45,49 +45,86 @@ function waToU8(wa) {
 }
 
 /**
- * 解密响应体并返回 JSON 对象。
- * Decrypt the response body and return the parsed JSON object.
+ * gzip magic header 检测。
+ * Detect gzip magic header.
  *
- * 自动检测明文是否是 gzip 流（魔数 `1F 8B`），是则解压。
- * 这样无需依赖请求头 `x-aeapi` 判断，对客户端内部强制使用优化模式的接口同样兼容。
+ * @param {Uint8Array} u8
+ * @returns {boolean}
+ */
+function isGzipped(u8) {
+  return u8.length >= 2 && u8[0] === 0x1f && u8[1] === 0x8b;
+}
+
+/**
+ * 解密响应体并返回 JSON 对象。多策略 fallback。
+ * Decrypt the response body and return parsed JSON, using a multi-strategy fallback.
  *
- * Auto-detects whether the plaintext is gzipped (magic `1F 8B`) and inflates if so,
- * removing the dependency on the `x-aeapi` request header for endpoints that use
- * the optimized mode internally.
+ * 步骤 / Steps:
+ * 1. 归一化为 Uint8Array / Normalize to Uint8Array.
+ * 2. 若开头是 gzip magic → 先解 HTTP 层 gzip（QX 不剥的情况）/
+ *    Peel HTTP-level gzip if present (QX may not strip it).
+ * 3. AES-128-ECB 解密 → 内层若是 gzip 则再解一次 → JSON / AES decrypt → optional inner gzip → JSON.
+ * 4. 兜底：把原始字节当作明文 JSON / Fallback: try parsing the raw bytes as plain JSON.
  *
- * @param {Uint8Array|ArrayBuffer|string} body - 原始响应体 / Raw response body.
- * @param {boolean} [_isAeapi] - 兼容旧调用，参数不再使用 / Legacy flag, no longer used.
+ * @param {Uint8Array|ArrayBuffer|string} body
+ * @param {boolean} [_isAeapi] 旧参数，已忽略 / Legacy flag, ignored.
  * @returns {object|null}
  */
 export function decryptBody(body, _isAeapi) {
-  try {
-    let u8;
-    if (body instanceof Uint8Array) u8 = body;
-    else if (body instanceof ArrayBuffer) u8 = new Uint8Array(body);
-    else if (typeof body === "string") {
-      u8 = new Uint8Array(body.length);
-      for (let i = 0; i < body.length; i++) u8[i] = body.charCodeAt(i) & 0xff;
-    } else {
-      return null;
-    }
+  // 归一化为 Uint8Array
+  // Normalize to Uint8Array
+  let u8;
+  if (body instanceof Uint8Array) u8 = body;
+  else if (body instanceof ArrayBuffer) u8 = new Uint8Array(body);
+  else if (typeof body === "string") {
+    u8 = new Uint8Array(body.length);
+    for (let i = 0; i < body.length; i++) u8[i] = body.charCodeAt(i) & 0xff;
+  } else {
+    return null;
+  }
+  if (!u8.length) return null;
 
+  // 部分 QX 场景下 HTTP 层的 gzip 不会被自动剥离，提前解一层。
+  // QX may leave HTTP-level gzip on the body; peel it first if present.
+  if (isGzipped(u8)) {
+    try {
+      u8 = pako.ungzip(u8);
+    } catch {
+      /* 保留原始字节，下一步可能仍可解 */
+    }
+  }
+
+  // 策略 1：AES 解密 → 可选内层 gzip → JSON
+  // Strategy 1: AES decrypt → optional inner gzip → JSON
+  try {
     const decrypted = CryptoJS.AES.decrypt(
       CryptoJS.lib.CipherParams.create({ ciphertext: u8ToWA(u8) }),
       KEY,
       CFG
     );
-
     const bytes = waToU8(decrypted);
-    // gzip magic: 1F 8B → 解压；否则按 UTF-8 解析。
-    // gzip magic 1F 8B → inflate; otherwise parse as UTF-8 directly.
-    const isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
-    const json = isGzip
-      ? new TextDecoder("utf-8").decode(pako.ungzip(bytes))
-      : new TextDecoder("utf-8").decode(bytes);
-    return JSON.parse(json);
+    if (bytes.length > 0) {
+      const json = isGzipped(bytes)
+        ? new TextDecoder("utf-8").decode(pako.ungzip(bytes))
+        : new TextDecoder("utf-8").decode(bytes);
+      const obj = JSON.parse(json);
+      if (obj && typeof obj === "object") return obj;
+    }
   } catch {
-    return null;
+    /* fall through */
   }
+
+  // 策略 2：原始字节直接当 UTF-8 JSON（罕见的明文响应）。
+  // Strategy 2: parse raw bytes as plain UTF-8 JSON (rare unencrypted responses).
+  try {
+    const json = new TextDecoder("utf-8").decode(u8);
+    const obj = JSON.parse(json);
+    if (obj && typeof obj === "object") return obj;
+  } catch {
+    /* fall through */
+  }
+
+  return null;
 }
 
 /**
