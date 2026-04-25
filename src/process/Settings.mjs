@@ -66,16 +66,27 @@ export function loadSettings() {
   for (const key of Object.keys(DEFAULTS)) {
     let raw;
     const argVal = arg[key];
+    const isStringKey = typeof DEFAULTS[key] === "string";
     // Loon 等宿主在用户留空 input 时可能不替换占位符，把字面 `{KEY}` 当成有效值传进来。
-    // 这种场景应视为未设置，回退到 BoxJS 存储或默认值。
     // Loon (and similar hosts) may leave the literal placeholder `{KEY}` when the user
-    // leaves an input blank; treat that as unset so we fall back to storage / defaults.
+    // leaves an input blank; treat that as unset.
     const isPlaceholder = typeof argVal === "string" && argVal === `{${key}}`;
-    if (argVal !== undefined && argVal !== "" && argVal !== null && !isPlaceholder) {
+    // Surge / QX 约定字符串字段（如自定义 Tab 名）默认值 `0` 表示"未填写"。
+    // Surge / QX use `0` as the "unset" sentinel for string fields like custom Tab names.
+    const isZeroSentinel = isStringKey && (argVal === "0" || argVal === 0);
+    if (
+      argVal !== undefined &&
+      argVal !== "" &&
+      argVal !== null &&
+      !isPlaceholder &&
+      !isZeroSentinel
+    ) {
       raw = argVal;
     } else {
       const stored = Storage.getItem(`wyy_${key}`, null);
-      raw = stored !== null && stored !== "" ? stored : DEFAULTS[key];
+      // BoxJS 持久化的字符串字段也可能存了 "0"，同样视作未设置。
+      const storedIsZero = isStringKey && stored === "0";
+      raw = stored !== null && stored !== "" && !storedIsZero ? stored : DEFAULTS[key];
     }
 
     // 按默认值的类型归一化：number → number / string → string
