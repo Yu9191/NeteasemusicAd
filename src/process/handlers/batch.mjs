@@ -1,4 +1,4 @@
-import { fakeVip } from "../utils/vip.mjs";
+import { fakeVip } from "../../function/vip.mjs";
 
 /**
  * 批量接口处理 (`/batch`)。

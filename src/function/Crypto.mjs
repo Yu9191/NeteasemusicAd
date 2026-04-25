@@ -1,12 +1,5 @@
 /**
- * 响应体加解密工具。
- * Response body encryption and decryption helpers.
- *
- * 模式 / Mode:
- * - 默认：AES-128-ECB(json_utf8)
- * - 优化模式：AES-128-ECB(gzip(json_utf8))，由请求头 `x-aeapi: true` 触发
- * - Default: AES-128-ECB(json_utf8)
- * - Optimized: AES-128-ECB(gzip(json_utf8)), enabled by `x-aeapi: true` header
+ * 网易云音乐 eapi 响应体加解密。AES-128-ECB(Pkcs7) + 可选 gzip。
  */
 import { Console } from "@nsnanocat/util";
 import CryptoJS from "crypto-js";
@@ -15,13 +8,6 @@ import pako from "pako";
 const KEY = CryptoJS.enc.Utf8.parse("e82ckenh8dichen8");
 const CFG = { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 };
 
-/**
- * 将 Uint8Array 转换为 CryptoJS WordArray。
- * Convert a Uint8Array to a CryptoJS WordArray.
- *
- * @param {Uint8Array} u8 - 原始字节 / Raw bytes.
- * @returns {CryptoJS.lib.WordArray}
- */
 function u8ToWA(u8) {
   const words = [];
   for (let i = 0; i < u8.length; i++) {
@@ -30,13 +16,6 @@ function u8ToWA(u8) {
   return CryptoJS.lib.WordArray.create(words, u8.length);
 }
 
-/**
- * 将 CryptoJS WordArray 转换为 Uint8Array。
- * Convert a CryptoJS WordArray to a Uint8Array.
- *
- * @param {CryptoJS.lib.WordArray} wa
- * @returns {Uint8Array}
- */
 function waToU8(wa) {
   const u8 = new Uint8Array(wa.sigBytes);
   for (let i = 0; i < wa.sigBytes; i++) {
@@ -45,36 +24,10 @@ function waToU8(wa) {
   return u8;
 }
 
-/**
- * gzip magic header 检测。
- * Detect gzip magic header.
- *
- * @param {Uint8Array} u8
- * @returns {boolean}
- */
 function isGzipped(u8) {
   return u8.length >= 2 && u8[0] === 0x1f && u8[1] === 0x8b;
 }
 
-/**
- * 解密响应体并返回 JSON 对象。多策略 fallback。
- * Decrypt the response body and return parsed JSON, using a multi-strategy fallback.
- *
- * 步骤 / Steps:
- * 1. 归一化为 Uint8Array / Normalize to Uint8Array.
- * 2. 若开头是 gzip magic → 先解 HTTP 层 gzip（QX 不剥的情况）/
- *    Peel HTTP-level gzip if present (QX may not strip it).
- * 3. AES-128-ECB 解密 → 内层若是 gzip 则再解一次 → JSON / AES decrypt → optional inner gzip → JSON.
- * 4. 兜底：把原始字节当作明文 JSON / Fallback: try parsing the raw bytes as plain JSON.
- *
- * @param {Uint8Array|ArrayBuffer|string} body
- * @param {boolean} [_isAeapi] 旧参数，已忽略 / Legacy flag, ignored.
- * @returns {object|null}
- */
-/**
- * 取 Uint8Array 前 N 字节的 hex 表示，用于诊断日志。
- * Hex preview of the first N bytes of a Uint8Array, for diagnostic logs.
- */
 function hexHead(u8, n = 16) {
   const len = Math.min(u8.length, n);
   let s = "";
@@ -85,9 +38,10 @@ function hexHead(u8, n = 16) {
   return s;
 }
 
-export function decryptBody(body, _isAeapi) {
-  // 归一化为 Uint8Array
-  // Normalize to Uint8Array
+/**
+ * 解密响应体为 JSON。多策略 fallback：HTTP gzip 剥离 → AES → 内层 gzip → JSON；失败时按明文 JSON 兜底。
+ */
+export function decryptBody(body) {
   let u8;
   let bodyKind;
   if (body instanceof Uint8Array) {
@@ -112,8 +66,7 @@ export function decryptBody(body, _isAeapi) {
   const errors = [];
   const originalHead = hexHead(u8);
 
-  // 部分 QX 场景下 HTTP 层的 gzip 不会被自动剥离，提前解一层。
-  // QX may leave HTTP-level gzip on the body; peel it first if present.
+  // QX 不会自动剥 HTTP 层 gzip
   let httpUngzipped = false;
   if (isGzipped(u8)) {
     try {
@@ -124,8 +77,7 @@ export function decryptBody(body, _isAeapi) {
     }
   }
 
-  // 策略 1：AES 解密 → 可选内层 gzip → JSON
-  // Strategy 1: AES decrypt → optional inner gzip → JSON
+  // 策略 1: AES → 内层 gzip → JSON
   try {
     const decrypted = CryptoJS.AES.decrypt(
       CryptoJS.lib.CipherParams.create({ ciphertext: u8ToWA(u8) }),
@@ -147,8 +99,7 @@ export function decryptBody(body, _isAeapi) {
     errors.push(`aes: ${e?.message || e}`);
   }
 
-  // 策略 2：原始字节直接当 UTF-8 JSON（罕见的明文响应）。
-  // Strategy 2: parse raw bytes as plain UTF-8 JSON (rare unencrypted responses).
+  // 策略 2: 明文 JSON 兜底
   try {
     const json = new TextDecoder("utf-8").decode(u8);
     const obj = JSON.parse(json);
@@ -158,22 +109,13 @@ export function decryptBody(body, _isAeapi) {
     errors.push(`plain: ${e?.message || e}`);
   }
 
-  // 全部失败：把诊断信息挂到函数本身，调用方可读取后跟报错一起打印。
-  // All strategies failed: stash diagnostic info on the function itself so the caller
-  // can include it in its own error log (more reliable than separate Console.error calls).
   decryptBody.lastError =
     `kind=${bodyKind} len=${u8.length} httpUngzip=${httpUngzipped} head=[${originalHead}] | ${errors.join(" | ")}`;
   Console.error(`[WYY/Crypto] 解密失败 ${decryptBody.lastError}`);
   return null;
 }
 
-/**
- * 将 JSON 对象加密为 Uint8Array 响应体。
- * Encrypt a JSON object into a Uint8Array response body.
- *
- * @param {object} obj - 待加密对象 / Object to encrypt.
- * @returns {Uint8Array}
- */
+/** 加密 JSON 对象为 Uint8Array 响应体。 */
 export function encryptBody(obj) {
   const plaintext = JSON.stringify(obj);
   const encrypted = CryptoJS.AES.encrypt(plaintext, KEY, CFG);

@@ -1,38 +1,20 @@
 /**
- * 网易云音乐响应处理核心 - 路由分发器。
- * NetEase Cloud Music response router.
+ * 响应路由分发。
  *
- * 流程 / Pipeline:
- * 1. 提取 API 路径 / Extract API path from URL.
- * 2. 解密响应体 / Decrypt response body (eapi / aeapi).
- * 3. 从 {@link HANDLERS} 路由表查找处理器并执行 / Look up handler in {@link HANDLERS} and run it.
- * 4. 处理器返回 `undefined` 时把修改后的对象重新加密为响应体；返回响应对象则直接短路。
- *    If handler returns `undefined`, re-encrypt the mutated object as response body;
- *    if it returns a response object, short-circuit and use it directly.
+ * 提取 API 路径 → 解密 → 查 HANDLERS → 处理后重新加密。
+ * Handler 返回对象时直接短路替换；返回 undefined 时按默认流程加密。
  */
 import { $app, Console } from "@nsnanocat/util";
-import { decryptBody, encryptBody } from "./Crypto.mjs";
+import database from "../database.mjs";
+import { decryptBody, encryptBody } from "../function/Crypto.mjs";
+import setENV, { toInt } from "../function/setENV.mjs";
+import { extractPath } from "../function/url.mjs";
 import { HANDLERS } from "./handlers/index.mjs";
-import { loadSettings, toInt } from "./Settings.mjs";
-import { extractPath } from "./utils/url.mjs";
 
-/**
- * 响应处理入口。
- * Response processing entry point.
- *
- * @param {object} $request - 原始请求对象 / Original request.
- * @param {object} $response - 原始响应对象 / Original response.
- * @returns {Promise<object>} 修改后的响应对象 / Modified response.
- */
 export async function Response($request, $response) {
   if (!$request?.url || !$response) return $response;
 
-  // 按 NSNanoCat/Template 标准做法读取二进制响应体：
-  //   - Quantumult X: 通过 `$response.bodyBytes` 拿原始字节
-  //   - Surge / Loon / Stash 等: `$response.body` 已经是 Uint8Array
-  // Read binary response body the NSNanoCat-standard way:
-  //   - Quantumult X exposes raw bytes via `$response.bodyBytes`
-  //   - Surge / Loon / Stash already provide a Uint8Array on `$response.body`
+  // QX 走 bodyBytes，其它平台 body 已是 Uint8Array
   const rawBody =
     $app === "Quantumult X"
       ? new Uint8Array($response.bodyBytes ?? [])
@@ -52,10 +34,10 @@ export async function Response($request, $response) {
     return $response;
   }
 
-  const settings = loadSettings();
+  const Settings = setENV(database);
   const ctx = {
-    settings,
-    vipLv: toInt(settings.VipLevel, 7),
+    settings: Settings,
+    vipLv: toInt(Settings.VipLevel, 7),
     $request,
     $response
   };
@@ -65,9 +47,6 @@ export async function Response($request, $response) {
   try {
     const shortCircuit = handler(s, ctx);
     if (shortCircuit) return shortCircuit;
-
-    // 写回统一使用 `body`，由 `done()` 按 `$app` 自行分发到对应字段。
-    // Always write to `body`; `done()` will route to the correct field per `$app`.
     return { ...$response, body: encryptBody(s) };
   } catch (e) {
     Console.error(`[WYY] 处理 ${path} 异常: ${e?.message || e}`);

@@ -1,5 +1,5 @@
-import { toInt } from "../Settings.mjs";
-import { fakeVip } from "../utils/vip.mjs";
+import { toInt } from "../../function/setENV.mjs";
+import { fakeVip } from "../../function/vip.mjs";
 
 /**
  * 内部辅助：当 VipEnabled=0 时短路返回原响应，避免对 VIP 字段做任何修改。
