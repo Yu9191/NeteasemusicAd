@@ -1,14 +1,9 @@
 /**
- * API 路径到处理器的路由表。
- * API path-to-handler routing table.
+ * API 路径 → 处理器路由表。
  *
- * 处理器签名 / Handler signature:
- *   `(s: object, ctx: { settings, vipLv, $request, $response }) => object | undefined`
- *
- * - 返回 `object` → 短路：该返回值直接作为最终响应（不再调用 `encryptBody(s)`）。
- * - Return `object` → short-circuit: that value is used as the final response (no re-encrypt).
- * - 返回 `undefined` → 默认流程：调用 `encryptBody(s)` 并替换 body。
- * - Return `undefined` → default flow: re-encrypt `s` and replace the body.
+ * 处理器签名：(s, ctx) => object | undefined
+ * - 返回 object   → 短路：直接作为最终响应（不再加密）
+ * - 返回 undefined → 默认：encryptBody(s) 后替换 body
  */
 import { batch } from "./batch.mjs";
 import { bottomTab } from "./bottomTab.mjs";
@@ -18,9 +13,6 @@ import { discovery, homepageBlock, rcmdRefresh, rcmdResource } from "./home.mjs"
 import { topTab } from "./topTab.mjs";
 import { vipCardEntry, vipFloat, vipInfo, vipNewCenter } from "./vip.mjs";
 
-/**
- * @type {Record<string, (s: object, ctx: object) => (object|undefined)>}
- */
 export const HANDLERS = {
   "/batch": batch,
   "/v2/resource/comment/floor/get": commentFloor,

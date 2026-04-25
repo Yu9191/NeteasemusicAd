@@ -1,13 +1,5 @@
 /**
- * 评论楼层处理 (`/v2/resource/comment/floor/get`)。
- * Comment floor handler.
- *
- * 修改内容 / Modifications:
- * - 楼主评论：清空 VIP 标识、头像装饰、挂件
- * - 子评论：未关注的强制 followed=true，并清理装饰字段
- *
- * @param {object} s
- * @returns {void}
+ * 评论楼层：楼主与子评论清空 VIP 标识/头像装饰/挂件，未关注的强制 followed=true。
  */
 export function commentFloor(s) {
   if (s.data?.ownerComment?.user) {

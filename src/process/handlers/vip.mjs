@@ -1,39 +1,19 @@
 import { toInt } from "../../function/setENV.mjs";
 import { fakeVip } from "../../function/vip.mjs";
 
-/**
- * 内部辅助：当 VipEnabled=0 时短路返回原响应，避免对 VIP 字段做任何修改。
- * Internal helper: when VipEnabled=0, short-circuit and return the original response untouched.
- *
- * @param {object} ctx
- * @returns {object|undefined} 原 $response（短路）或 undefined（继续走默认加密）
- */
+/** VipEnabled=0 时短路返回原响应。 */
 function passThroughIfDisabled(ctx) {
   if (ctx.settings.VipEnabled === 0) return ctx.$response;
 }
 
-/**
- * VIP 基础信息接口（客户端 / 前端两个变体）。
- * VIP basic info endpoints (client / front variants).
- *
- * @param {object} s
- * @param {object} ctx
- * @returns {object|undefined}
- */
+/** VIP 基础信息（client / front 两个变体）。 */
 export function vipInfo(s, ctx) {
   const passthrough = passThroughIfDisabled(ctx);
   if (passthrough) return passthrough;
   fakeVip(s.data, ctx.vipLv);
 }
 
-/**
- * VIP 中心浮层，包含弹窗与入口信息。
- * VIP center float overlay, popups and entry info.
- *
- * @param {object} s
- * @param {object} ctx
- * @returns {object|undefined}
- */
+/** VIP 中心浮层：伪造会员信息、清空收银/弹窗/浮提。 */
 export function vipFloat(s, ctx) {
   const passthrough = passThroughIfDisabled(ctx);
   if (passthrough) return passthrough;
@@ -46,14 +26,7 @@ export function vipFloat(s, ctx) {
   if (s.data?.floatTip) s.data.floatTip = null;
 }
 
-/**
- * VIP 卡片入口列表，包含成长值条目。
- * VIP card entry list containing the growth value item.
- *
- * @param {object} s
- * @param {object} ctx
- * @returns {object|undefined}
- */
+/** VIP 卡片入口：等级与成长值。 */
 export function vipCardEntry(s, ctx) {
   const passthrough = passThroughIfDisabled(ctx);
   if (passthrough) return passthrough;
@@ -68,14 +41,7 @@ export function vipCardEntry(s, ctx) {
   }
 }
 
-/**
- * VIP 中心新版账户页。
- * VIP center new account page.
- *
- * @param {object} s
- * @param {object} ctx
- * @returns {object|undefined}
- */
+/** VIP 中心新版账户页。 */
 export function vipNewCenter(s, ctx) {
   const passthrough = passThroughIfDisabled(ctx);
   if (passthrough) return passthrough;

@@ -1,11 +1,5 @@
 import { Console } from "@nsnanocat/util";
 
-/**
- * 底部 Tab 原始名称映射（设置键 → 中文 title）。
- * Bottom tab original title mapping (setting key to Chinese title).
- *
- * @type {Record<string, string>}
- */
 const BOTTOM_TAB_NAMES = {
   MY: "漫游",
   DT: "笔记",
@@ -15,24 +9,9 @@ const BOTTOM_TAB_NAMES = {
 };
 
 /**
- * 底部 Tab 过滤与改名 (`/link/home/framework/tab`)。
- * Bottom tab filter and rename handler.
- *
- * 修改内容 / Modifications:
- * - 根据 `MY/DT/FX/GZ/SOU`（值为 1）从底部隐藏对应 Tab
- * - 至少保留首页一个 Tab，避免 UI 崩溃
- * - 应用自定义 Tab 名称：`SY_NAME` / `WD_NAME` / `MY_NAME` / `DT_NAME` / `FX_NAME`
- * - 发现页子 Tab 移除"直播"
- *
- * @param {object} s
- * @param {{settings: Record<string, unknown>}} ctx
- * @returns {void}
+ * 底部 Tab 过滤与改名。隐藏 MY/DT/FX/GZ/SOU、应用自定义 Tab 名、发现页移除"直播"。
  */
 export function bottomTab(s, { settings }) {
-  // 调试：打印当前生效的底部 Tab 设置 + API 返回的原始 title 列表
-  // 仅在 LogLevel=debug 时输出，用户可通过 $argument.LogLevel 或 BoxJS wyy_LogLevel 打开。
-  // Debug: print effective bottom-tab settings and the raw titles from the API response.
-  // Visible only when LogLevel=debug ($argument.LogLevel or BoxJS wyy_LogLevel).
   Console.debug(`[WYY/bottomTab] settings: ${JSON.stringify({
     FX: settings.FX, MY: settings.MY, DT: settings.DT, GZ: settings.GZ, SOU: settings.SOU,
     SY_NAME: settings.SY_NAME, WD_NAME: settings.WD_NAME,
@@ -46,6 +25,7 @@ export function bottomTab(s, { settings }) {
 
   if (!s.data?.commonResourceList) return;
 
+  // 至少保留 1 个 Tab，避免 UI 崩溃
   const filtered = s.data.commonResourceList.filter(i => !hideTabs.includes(i.title));
   s.data.commonResourceList = filtered.length > 0
     ? filtered

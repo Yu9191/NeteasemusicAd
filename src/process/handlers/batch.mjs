@@ -1,18 +1,8 @@
 import { fakeVip } from "../../function/vip.mjs";
 
 /**
- * 批量接口处理 (`/batch`)。
- * Batch endpoint handler — combines multiple API responses in one body.
- *
- * 修改内容 / Modifications:
- * - 清空评论 tips、社交事件广告、`/api/ad/get` 广告位
- * - 若开启伪 VIP，伪造嵌套的 vip/info 数据
- * - 评论列表内的关注、VIP 标识、挂件等隐私信息清理
- * - 清空 feed 推荐、话题列表、付费下载入口
- *
- * @param {object} s - 解密后的响应对象 / Decrypted response.
- * @param {{settings: Record<string, unknown>, vipLv: number}} ctx
- * @returns {void}
+ * 批量接口。清评论 tips、社交事件广告、ad/get 广告位；伪造嵌套 vip/info；
+ * 评论列表脱敏（关注/VIP 标识/挂件）；清 feed 推荐、话题列表、付费下载入口。
  */
 export function batch(s, { settings, vipLv }) {
   const clearData = (k, v = {}) => {

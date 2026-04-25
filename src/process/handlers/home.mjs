@@ -1,9 +1,4 @@
-/**
- * 首页推荐卡片 bizCode 映射。
- * Home recommendation block bizCode mapping (setting key to bizCode).
- *
- * @type {Record<string, string>}
- */
+/** 首页推荐卡片 setting key → bizCode 映射。 */
 const BLOCK_MAP = {
   PRGG: "PAGE_RECOMMEND_GREETING",
   PRDRD: "PAGE_RECOMMEND_DAILY_RECOMMEND",
@@ -16,13 +11,7 @@ const BLOCK_MAP = {
   PRCN: "PAGE_RECOMMEND_COMBINATION"
 };
 
-/**
- * 清理问候语卡片中带遥测/广告字段的子项。
- * Strip telemetry / advertising fields from greeting block entries.
- *
- * @param {Array<object>} entries
- * @returns {void}
- */
+/** 清理问候语卡片中带遥测/广告字段的子项。 */
 function cleanGreetingEntries(entries) {
   for (const d of entries ?? []) {
     if (d.summary) d.summary = "";
@@ -36,26 +25,13 @@ function cleanGreetingEntries(entries) {
   }
 }
 
-/**
- * 计算允许显示的 bizCode 白名单。
- * Compute allowed bizCode whitelist from settings.
- *
- * @param {Record<string, unknown>} settings
- * @returns {string[]}
- */
 function allowedBizCodes(settings) {
   return Object.keys(BLOCK_MAP)
     .filter(k => settings[k] === 1)
     .map(k => BLOCK_MAP[k]);
 }
 
-/**
- * 首页 Banner 去除活动与广告类型 (`/homepage/block/page`)。
- * Home banner filter: remove activity/ad entries.
- *
- * @param {object} s
- * @returns {void}
- */
+/** 首页 Banner 移除活动/广告类型。 */
 export function homepageBlock(s) {
   if (!Array.isArray(s.data?.blocks)) return;
   for (const blk of s.data.blocks) {
@@ -68,13 +44,7 @@ export function homepageBlock(s) {
   }
 }
 
-/**
- * 发现页移除顶部 Banner (`/link/page/discovery/resource/show`)。
- * Discovery page: remove top banner.
- *
- * @param {object} s
- * @returns {void}
- */
+/** 发现页移除顶部 Banner。 */
 export function discovery(s) {
   if (s.data?.blockCodeOrderList) {
     try {
@@ -88,14 +58,7 @@ export function discovery(s) {
   }
 }
 
-/**
- * 推荐页全量加载 (`/link/page/rcmd/resource/show`)。
- * Recommendation page: full resource fetch.
- *
- * @param {object} s
- * @param {{settings: Record<string, unknown>}} ctx
- * @returns {void}
- */
+/** 推荐页全量加载：按 BLOCK_MAP 过滤 blocks，问候语再清理子项。 */
 export function rcmdResource(s, { settings }) {
   const allowed = allowedBizCodes(settings);
 
@@ -117,14 +80,7 @@ export function rcmdResource(s, { settings }) {
   }
 }
 
-/**
- * 推荐页增量刷新 (`/link/page/rcmd/block/resource/multi/refresh`)。
- * Recommendation incremental refresh handler.
- *
- * @param {object} s
- * @param {{settings: Record<string, unknown>}} ctx
- * @returns {void}
- */
+/** 推荐页增量刷新：与 rcmdResource 同语义但作用于 data 数组。 */
 export function rcmdRefresh(s, { settings }) {
   if (!Array.isArray(s.data)) return;
   const allowed = allowedBizCodes(settings);
