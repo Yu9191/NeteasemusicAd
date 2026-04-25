@@ -17,27 +17,27 @@
         {
           "id": "wyy_VipEnabled",
           "name": "开启伪 VIP",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 1, "label": "开启" },
-            { "key": 0, "label": "关闭" }
+            { "key": "1", "label": "开启" },
+            { "key": "0", "label": "关闭" }
           ],
           "desc": "关闭后所有 VIP 接口透传原响应"
         },
         {
           "id": "wyy_VipLevel",
           "name": "VIP 等级",
-          "val": 7,
+          "val": "7",
           "type": "selects",
           "items": [
-            { "key": 1, "label": "LV1" },
-            { "key": 2, "label": "LV2" },
-            { "key": 3, "label": "LV3" },
-            { "key": 4, "label": "LV4" },
-            { "key": 5, "label": "LV5" },
-            { "key": 6, "label": "LV6" },
-            { "key": 7, "label": "LV7 (满级)" }
+            { "key": "1", "label": "LV1" },
+            { "key": "2", "label": "LV2" },
+            { "key": "3", "label": "LV3" },
+            { "key": "4", "label": "LV4" },
+            { "key": "5", "label": "LV5" },
+            { "key": "6", "label": "LV6" },
+            { "key": "7", "label": "LV7 (满级)" }
           ],
           "desc": "伪造的 VIP 等级 1-7"
         },
@@ -72,41 +72,41 @@
         {
           "id": "wyy_FX",
           "name": "发现",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "显示" },
-            { "key": 1, "label": "隐藏" }
+            { "key": "0", "label": "显示" },
+            { "key": "1", "label": "隐藏" }
           ]
         },
         {
           "id": "wyy_MY",
           "name": "漫游",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "显示" },
-            { "key": 1, "label": "隐藏" }
+            { "key": "0", "label": "显示" },
+            { "key": "1", "label": "隐藏" }
           ]
         },
         {
           "id": "wyy_DT",
           "name": "笔记",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "显示" },
-            { "key": 1, "label": "隐藏" }
+            { "key": "0", "label": "显示" },
+            { "key": "1", "label": "隐藏" }
           ]
         },
         {
           "id": "wyy_GZ",
           "name": "关注",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "显示" },
-            { "key": 1, "label": "隐藏" }
+            { "key": "0", "label": "显示" },
+            { "key": "1", "label": "隐藏" }
           ]
         },
         {
@@ -149,21 +149,21 @@
         {
           "id": "wyy_AIXG",
           "name": "AI 写歌",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_HDTAB",
           "name": "活动 Tab (周年等运营位)",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         }
       ],
@@ -192,91 +192,91 @@
         {
           "id": "wyy_PRGG",
           "name": "问候语",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRDRD",
           "name": "每日推荐",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRSCVPT",
           "name": "推荐歌单",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRST",
           "name": "最近常听",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_HMPR",
           "name": "音乐合伙人",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRRR",
           "name": "雷达歌单",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRRK",
           "name": "排行榜",
-          "val": 0,
+          "val": "0",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRMST",
           "name": "推荐专属歌单",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         },
         {
           "id": "wyy_PRCN",
           "name": "你的专属歌单",
-          "val": 1,
+          "val": "1",
           "type": "selects",
           "items": [
-            { "key": 0, "label": "隐藏" },
-            { "key": 1, "label": "显示" }
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
           ]
         }
       ],
