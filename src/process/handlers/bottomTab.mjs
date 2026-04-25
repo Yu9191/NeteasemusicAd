@@ -18,7 +18,7 @@ const BOTTOM_TAB_NAMES = {
  * 修改内容 / Modifications:
  * - 根据 `MY/DT/FX/GZ`（值为 1）从底部隐藏对应 Tab，并强制移除"搜索/关注"
  * - 至少保留首页一个 Tab，避免 UI 崩溃
- * - 应用自定义 Tab 名称：`MY_NAME` / `DT_NAME` / `FX_NAME`
+ * - 应用自定义 Tab 名称：`SY_NAME` / `WD_NAME` / `MY_NAME` / `DT_NAME` / `FX_NAME`
  * - 发现页子 Tab 移除"直播"
  *
  * @param {object} s
@@ -39,6 +39,8 @@ export function bottomTab(s, { settings }) {
     : s.data.commonResourceList.slice(0, 1);
 
   for (const i of s.data.commonResourceList) {
+    if (i.title === "首页" && settings.SY_NAME) i.title = settings.SY_NAME;
+    if (i.title === "我的" && settings.WD_NAME) i.title = settings.WD_NAME;
     if (i.title === "漫游" && settings.MY_NAME) i.title = settings.MY_NAME;
     if (i.title === "笔记" && settings.DT_NAME) i.title = settings.DT_NAME;
     if (i.title === "发现") {

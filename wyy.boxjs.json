@@ -64,6 +64,8 @@
         "wyy_MY",
         "wyy_DT",
         "wyy_GZ",
+        "wyy_SY_NAME",
+        "wyy_WD_NAME",
         "wyy_MY_NAME",
         "wyy_DT_NAME",
         "wyy_FX_NAME"
@@ -108,6 +110,20 @@
             { "key": "0", "label": "显示" },
             { "key": "1", "label": "隐藏" }
           ]
+        },
+        {
+          "id": "wyy_SY_NAME",
+          "name": "首页自定义名称",
+          "val": "",
+          "type": "text",
+          "desc": "留空保持原名"
+        },
+        {
+          "id": "wyy_WD_NAME",
+          "name": "我的自定义名称",
+          "val": "",
+          "type": "text",
+          "desc": "留空保持原名"
         },
         {
           "id": "wyy_MY_NAME",

@@ -31,7 +31,7 @@ const DEFAULTS = {
   GrowthValue: 99999,
 
   FX: 0, MY: 1, DT: 0, GZ: 1,
-  MY_NAME: "", DT_NAME: "", FX_NAME: "",
+  MY_NAME: "", DT_NAME: "", FX_NAME: "", SY_NAME: "", WD_NAME: "",
 
   AIXG: 0, HDTAB: 0,
 
@@ -65,8 +65,14 @@ export function loadSettings() {
 
   for (const key of Object.keys(DEFAULTS)) {
     let raw;
-    if (arg[key] !== undefined && arg[key] !== "" && arg[key] !== null) {
-      raw = arg[key];
+    const argVal = arg[key];
+    // Loon 等宿主在用户留空 input 时可能不替换占位符，把字面 `{KEY}` 当成有效值传进来。
+    // 这种场景应视为未设置，回退到 BoxJS 存储或默认值。
+    // Loon (and similar hosts) may leave the literal placeholder `{KEY}` when the user
+    // leaves an input blank; treat that as unset so we fall back to storage / defaults.
+    const isPlaceholder = typeof argVal === "string" && argVal === `{${key}}`;
+    if (argVal !== undefined && argVal !== "" && argVal !== null && !isPlaceholder) {
+      raw = argVal;
     } else {
       const stored = Storage.getItem(`wyy_${key}`, null);
       raw = stored !== null && stored !== "" ? stored : DEFAULTS[key];
