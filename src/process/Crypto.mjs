@@ -8,6 +8,7 @@
  * - Default: AES-128-ECB(json_utf8)
  * - Optimized: AES-128-ECB(gzip(json_utf8)), enabled by `x-aeapi: true` header
  */
+import { Console } from "@nsnanocat/util";
 import CryptoJS from "crypto-js";
 import pako from "pako";
 
@@ -70,27 +71,56 @@ function isGzipped(u8) {
  * @param {boolean} [_isAeapi] 旧参数，已忽略 / Legacy flag, ignored.
  * @returns {object|null}
  */
+/**
+ * 取 Uint8Array 前 N 字节的 hex 表示，用于诊断日志。
+ * Hex preview of the first N bytes of a Uint8Array, for diagnostic logs.
+ */
+function hexHead(u8, n = 16) {
+  const len = Math.min(u8.length, n);
+  let s = "";
+  for (let i = 0; i < len; i++) {
+    s += u8[i].toString(16).padStart(2, "0");
+    if (i < len - 1) s += " ";
+  }
+  return s;
+}
+
 export function decryptBody(body, _isAeapi) {
   // 归一化为 Uint8Array
   // Normalize to Uint8Array
   let u8;
-  if (body instanceof Uint8Array) u8 = body;
-  else if (body instanceof ArrayBuffer) u8 = new Uint8Array(body);
-  else if (typeof body === "string") {
+  let bodyKind;
+  if (body instanceof Uint8Array) {
+    u8 = body;
+    bodyKind = "Uint8Array";
+  } else if (body instanceof ArrayBuffer) {
+    u8 = new Uint8Array(body);
+    bodyKind = "ArrayBuffer";
+  } else if (typeof body === "string") {
     u8 = new Uint8Array(body.length);
     for (let i = 0; i < body.length; i++) u8[i] = body.charCodeAt(i) & 0xff;
+    bodyKind = "string";
   } else {
+    Console.error(`[WYY/Crypto] body 类型未知: ${typeof body}`);
     return null;
   }
-  if (!u8.length) return null;
+  if (!u8.length) {
+    Console.error("[WYY/Crypto] body 为空");
+    return null;
+  }
+
+  const errors = [];
+  const originalHead = hexHead(u8);
 
   // 部分 QX 场景下 HTTP 层的 gzip 不会被自动剥离，提前解一层。
   // QX may leave HTTP-level gzip on the body; peel it first if present.
+  let httpUngzipped = false;
   if (isGzipped(u8)) {
     try {
       u8 = pako.ungzip(u8);
-    } catch {
-      /* 保留原始字节，下一步可能仍可解 */
+      httpUngzipped = true;
+    } catch (e) {
+      errors.push(`http-ungzip: ${e?.message || e}`);
     }
   }
 
@@ -109,9 +139,12 @@ export function decryptBody(body, _isAeapi) {
         : new TextDecoder("utf-8").decode(bytes);
       const obj = JSON.parse(json);
       if (obj && typeof obj === "object") return obj;
+      errors.push("aes: 解出非对象");
+    } else {
+      errors.push("aes: 解出空字节");
     }
-  } catch {
-    /* fall through */
+  } catch (e) {
+    errors.push(`aes: ${e?.message || e}`);
   }
 
   // 策略 2：原始字节直接当 UTF-8 JSON（罕见的明文响应）。
@@ -120,10 +153,17 @@ export function decryptBody(body, _isAeapi) {
     const json = new TextDecoder("utf-8").decode(u8);
     const obj = JSON.parse(json);
     if (obj && typeof obj === "object") return obj;
-  } catch {
-    /* fall through */
+    errors.push("plain: 解出非对象");
+  } catch (e) {
+    errors.push(`plain: ${e?.message || e}`);
   }
 
+  // 全部失败：打印诊断信息
+  // All strategies failed: emit diagnostic info
+  Console.error(
+    `[WYY/Crypto] 解密失败 kind=${bodyKind} len=${u8.length}` +
+      ` httpUngzip=${httpUngzipped} head=${originalHead} | ${errors.join(" | ")}`
+  );
   return null;
 }
 
