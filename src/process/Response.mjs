@@ -14,7 +14,7 @@ import { $app, Console } from "@nsnanocat/util";
 import { decryptBody, encryptBody } from "./Crypto.mjs";
 import { HANDLERS } from "./handlers/index.mjs";
 import { loadSettings, toInt } from "./Settings.mjs";
-import { extractPath, isAeapiRequest } from "./utils/url.mjs";
+import { extractPath } from "./utils/url.mjs";
 
 /**
  * 响应处理入口。
@@ -46,7 +46,7 @@ export async function Response($request, $response) {
   const handler = HANDLERS[path];
   if (!handler) return $response;
 
-  const s = decryptBody(rawBody, isAeapiRequest($request));
+  const s = decryptBody(rawBody);
   if (!s) {
     Console.error(`[WYY] 解密失败: ${path}`);
     return $response;

@@ -48,11 +48,18 @@ function waToU8(wa) {
  * 解密响应体并返回 JSON 对象。
  * Decrypt the response body and return the parsed JSON object.
  *
+ * 自动检测明文是否是 gzip 流（魔数 `1F 8B`），是则解压。
+ * 这样无需依赖请求头 `x-aeapi` 判断，对客户端内部强制使用优化模式的接口同样兼容。
+ *
+ * Auto-detects whether the plaintext is gzipped (magic `1F 8B`) and inflates if so,
+ * removing the dependency on the `x-aeapi` request header for endpoints that use
+ * the optimized mode internally.
+ *
  * @param {Uint8Array|ArrayBuffer|string} body - 原始响应体 / Raw response body.
- * @param {boolean} isAeapi - 是否为 aeapi 格式（需额外 gzip 解压）/ Whether the body is aeapi format (requires extra gzip inflate).
- * @returns {object|null} 解析成功返回对象，失败返回 null / Parsed object on success, null on failure.
+ * @param {boolean} [_isAeapi] - 兼容旧调用，参数不再使用 / Legacy flag, no longer used.
+ * @returns {object|null}
  */
-export function decryptBody(body, isAeapi) {
+export function decryptBody(body, _isAeapi) {
   try {
     let u8;
     if (body instanceof Uint8Array) u8 = body;
@@ -70,12 +77,14 @@ export function decryptBody(body, isAeapi) {
       CFG
     );
 
-    if (isAeapi) {
-      const bytes = waToU8(decrypted);
-      const json = new TextDecoder("utf-8").decode(pako.ungzip(bytes));
-      return JSON.parse(json);
-    }
-    return JSON.parse(CryptoJS.enc.Utf8.stringify(decrypted));
+    const bytes = waToU8(decrypted);
+    // gzip magic: 1F 8B → 解压；否则按 UTF-8 解析。
+    // gzip magic 1F 8B → inflate; otherwise parse as UTF-8 directly.
+    const isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+    const json = isGzip
+      ? new TextDecoder("utf-8").decode(pako.ungzip(bytes))
+      : new TextDecoder("utf-8").decode(bytes);
+    return JSON.parse(json);
   } catch {
     return null;
   }
