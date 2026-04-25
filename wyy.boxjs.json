@@ -313,6 +313,36 @@
         "https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png",
         "https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png"
       ]
+    },
+    {
+      "id": "WYY_DEBUG",
+      "name": "调试",
+      "keys": [
+        "wyy_LogLevel"
+      ],
+      "settings": [
+        {
+          "id": "wyy_LogLevel",
+          "name": "日志级别",
+          "val": "info",
+          "type": "selects",
+          "items": [
+            { "key": "off",   "label": "关闭" },
+            { "key": "error", "label": "ERROR" },
+            { "key": "warn",  "label": "WARN" },
+            { "key": "info",  "label": "INFO (默认)" },
+            { "key": "debug", "label": "DEBUG (排错)" },
+            { "key": "all",   "label": "ALL" }
+          ],
+          "desc": "排错时切到 DEBUG 可看到 Settings/handler 内部日志"
+        }
+      ],
+      "author": "@ios151",
+      "repo": "https://github.com/Yu9191/NeteasemusicAd",
+      "icons": [
+        "https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png",
+        "https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png"
+      ]
     }
   ]
 }
