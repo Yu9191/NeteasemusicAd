@@ -7,7 +7,7 @@
 import { $app, Console } from "@nsnanocat/util";
 import database from "../database.mjs";
 import { decryptBody, encryptBody } from "../function/Crypto.mjs";
-import setENV, { toInt } from "../function/setENV.mjs";
+import setENV, { toInt, toMs } from "../function/setENV.mjs";
 import { extractPath } from "../function/url.mjs";
 import { HANDLERS } from "./handlers/index.mjs";
 
@@ -35,9 +35,12 @@ export async function Response($request, $response) {
   }
 
   const Settings = setENV(database);
+  // 默认 2099-09-09 23:59:59 UTC+8 ≈ 4092623999000
+  const DEFAULT_VIP_EXPIRE = 4092623999000;
   const ctx = {
     settings: Settings,
     vipLv: toInt(Settings.VipLevel, 7),
+    vipExpire: toMs(Settings.VipExpire, DEFAULT_VIP_EXPIRE),
     $request,
     $response
   };

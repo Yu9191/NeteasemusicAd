@@ -4,7 +4,7 @@ import { fakeVip } from "../../function/vip.mjs";
  * 批量接口。清评论 tips、社交事件广告、ad/get 广告位；伪造嵌套 vip/info；
  * 评论列表脱敏（关注/VIP 标识/挂件）；清 feed 推荐、话题列表、付费下载入口。
  */
-export function batch(s, { settings, vipLv }) {
+export function batch(s, { settings, vipLv, vipExpire }) {
   const clearData = (k, v = {}) => {
     if (s[k]?.data) s[k].data = v;
   };
@@ -13,7 +13,7 @@ export function batch(s, { settings, vipLv }) {
   clearData("/api/ad/get", { code: 200, ads: {} });
 
   const vipKey = "/api/music-vip-membership/client/vip/info";
-  if (s[vipKey]?.data && settings.VipEnabled !== 0) fakeVip(s[vipKey].data, vipLv);
+  if (s[vipKey]?.data && settings.VipEnabled !== 0) fakeVip(s[vipKey].data, vipLv, vipExpire);
 
   for (const c of s["/api/v2/resource/comments"]?.data?.comments ?? []) {
     if (c.user?.followed === false) c.user.followed = true;

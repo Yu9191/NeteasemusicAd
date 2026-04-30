@@ -7,11 +7,13 @@
  */
 import { batch } from "./batch.mjs";
 import { bottomTab } from "./bottomTab.mjs";
+import { flowPopup, flowStatus } from "./flow.mjs";
 import { cashier, myPageBar, followList, songMore } from "./misc.mjs";
 import { commentFloor } from "./comment.mjs";
 import { discovery, homepageBlock, rcmdRefresh, rcmdResource } from "./home.mjs";
 import { topTab } from "./topTab.mjs";
-import { vipCardEntry, vipFloat, vipInfo, vipNewCenter } from "./vip.mjs";
+import { userInfo } from "./userInfo.mjs";
+import { vipCardEntry, vipFloat, vipInfo, vipNewCenter, vipQualityAuth } from "./vip.mjs";
 
 export const HANDLERS = {
   "/batch": batch,
@@ -21,7 +23,11 @@ export const HANDLERS = {
   "/music-vip-membership/front/vip/info": vipInfo,
   "/vip-center-bff/float/data": vipFloat,
   "/vip-center-bff/card/entry/list": vipCardEntry,
+  "/vip-center-bff/quality/auth/info": vipQualityAuth,
   "/vipnewcenter/app/resource/newaccountpage": vipNewCenter,
+  "/v1/user/info": userInfo,
+  "/sp/flow/status/v2": flowStatus,
+  "/sp/flow/popup/query": flowPopup,
 
   "/vipactivity/app/cashier/setting/get": cashier,
   "/link/position/show/resource": myPageBar,

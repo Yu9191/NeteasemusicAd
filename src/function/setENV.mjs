@@ -31,6 +31,29 @@ export function toInt(v, def) {
   return typeof n === "number" && Number.isFinite(n) ? n : def;
 }
 
+/**
+ * 将值规范化为毫秒时间戳。
+ * - 数字: 直接返回（兼容秒级 < 1e12 的输入自动 ×1000）
+ * - 纯数字字符串: 解析为数字
+ * - 日期字符串 (e.g. "2099-09-09" / "2099/09/09 23:59:59"): 用 Date.parse
+ * - 解析失败 → def
+ */
+export function toMs(v, def) {
+  if (v === null || v === undefined || v === "") return def;
+  if (typeof v === "number" && Number.isFinite(v)) {
+    return v < 1e12 ? Math.round(v * 1000) : v;
+  }
+  if (typeof v === "string") {
+    if (/^\d+$/.test(v)) {
+      const n = Number(v);
+      return n < 1e12 ? Math.round(n * 1000) : n;
+    }
+    const t = Date.parse(v.replace(/-/g, "/"));
+    if (!Number.isNaN(t)) return t;
+  }
+  return def;
+}
+
 function pickArgumentOverrides(database, arg) {
   const out = {};
   for (const key of Object.keys(database)) {

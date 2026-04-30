@@ -5,12 +5,14 @@ export default {
   VipEnabled: 1,
   VipLevel: 7,
   GrowthValue: 99999,
+  VipExpire: "2099-09-09",
 
   FX: 0, MY: 1, DT: 0, GZ: 1, SOU: 1,
   MY_NAME: "", DT_NAME: "", FX_NAME: "", SY_NAME: "", WD_NAME: "",
 
   AIXG: 0, HDTAB: 0,
 
-  PRGG: 1, PRDRD: 0, PRSCVPT: 0, PRST: 0,
-  HMPR: 0, PRRR: 1, PRRK: 0, PRMST: 1, PRCN: 1
+  PRGG: 0, PRDRD: 0, PRSCVPT: 0, PRST: 0,
+  HMPR: 0, PRRR: 1, PRRK: 0, PRMST: 0, PRCN: 1,
+  PRPRS: 1, PRRSS: 1
 };

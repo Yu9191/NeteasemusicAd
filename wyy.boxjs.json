@@ -11,7 +11,8 @@
       "keys": [
         "wyy_VipEnabled",
         "wyy_VipLevel",
-        "wyy_GrowthValue"
+        "wyy_GrowthValue",
+        "wyy_VipExpire"
       ],
       "settings": [
         {
@@ -47,6 +48,13 @@
           "val": 99999,
           "type": "number",
           "desc": "VIP 成长值显示 (默认 99999)"
+        },
+        {
+          "id": "wyy_VipExpire",
+          "name": "VIP 到期时间",
+          "val": "2099-09-09",
+          "type": "text",
+          "desc": "支持日期 (2099-09-09 / 2099/09/09 23:59:59) 或毫秒时间戳；留空 → 默认 2099-09-09"
         }
       ],
       "author": "@ios151",
@@ -213,13 +221,15 @@
         "wyy_PRRR",
         "wyy_PRRK",
         "wyy_PRMST",
-        "wyy_PRCN"
+        "wyy_PRCN",
+        "wyy_PRPRS",
+        "wyy_PRRSS"
       ],
       "settings": [
         {
           "id": "wyy_PRGG",
           "name": "问候语",
-          "val": "1",
+          "val": "0",
           "type": "selects",
           "items": [
             { "key": "0", "label": "隐藏" },
@@ -289,7 +299,7 @@
         {
           "id": "wyy_PRMST",
           "name": "推荐专属歌单",
-          "val": "1",
+          "val": "0",
           "type": "selects",
           "items": [
             { "key": "0", "label": "隐藏" },
@@ -299,6 +309,26 @@
         {
           "id": "wyy_PRCN",
           "name": "你的专属歌单",
+          "val": "1",
+          "type": "selects",
+          "items": [
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
+          ]
+        },
+        {
+          "id": "wyy_PRPRS",
+          "name": "私房推荐歌曲",
+          "val": "1",
+          "type": "selects",
+          "items": [
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
+          ]
+        },
+        {
+          "id": "wyy_PRRSS",
+          "name": "红心相似歌曲",
           "val": "1",
           "type": "selects",
           "items": [

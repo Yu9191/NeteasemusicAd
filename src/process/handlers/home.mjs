@@ -8,7 +8,9 @@ const BLOCK_MAP = {
   PRRR: "PAGE_RECOMMEND_RADAR",
   PRRK: "PAGE_RECOMMEND_RANK",
   PRMST: "PAGE_RECOMMEND_MY_SHEET",
-  PRCN: "PAGE_RECOMMEND_COMBINATION"
+  PRCN: "PAGE_RECOMMEND_COMBINATION",
+  PRPRS: "PAGE_RECOMMEND_PRIVATE_RCMD_SONG",
+  PRRSS: "PAGE_RECOMMEND_RED_SIMILAR_SONG"
 };
 
 /** 清理问候语卡片中带遥测/广告字段的子项。 */
@@ -58,11 +60,22 @@ export function discovery(s) {
   }
 }
 
+/** 按白名单过滤 JSON 字符串化的 blockCode 列表。 */
+function filterCodeListJson(jsonStr, allowed) {
+  try {
+    const arr = JSON.parse(jsonStr);
+    return JSON.stringify(arr.filter(i => allowed.includes(i)));
+  } catch {
+    return jsonStr;
+  }
+}
+
 /** 推荐页全量加载：按 BLOCK_MAP 过滤 blocks，问候语再清理子项。 */
 export function rcmdResource(s, { settings }) {
   const allowed = allowedBizCodes(settings);
+  if (!s.data) return;
 
-  if (s.data?.blocks) {
+  if (Array.isArray(s.data.blocks)) {
     s.data.blocks = s.data.blocks.filter(b => allowed.includes(b.bizCode));
     const greeting = s.data.blocks.find(b => b.bizCode === "PAGE_RECOMMEND_GREETING");
     if (greeting?.dslData) {
@@ -71,24 +84,38 @@ export function rcmdResource(s, { settings }) {
       }
     }
   }
-  if (s.data?.blockCodeOrderList) {
-    try {
-      s.data.blockCodeOrderList = JSON.stringify(
-        JSON.parse(s.data.blockCodeOrderList).filter(i => allowed.includes(i))
-      );
-    } catch {}
+  if (typeof s.data.blockCodeOrderList === "string") {
+    s.data.blockCodeOrderList = filterCodeListJson(s.data.blockCodeOrderList, allowed);
   }
+  if (typeof s.data.algDemoteBlockCodeOrderList === "string") {
+    s.data.algDemoteBlockCodeOrderList = filterCodeListJson(s.data.algDemoteBlockCodeOrderList, allowed);
+  }
+  if (Array.isArray(s.data.requestBlockOrder)) {
+    s.data.requestBlockOrder = s.data.requestBlockOrder.filter(i => allowed.includes(i));
+  }
+  // 斩断懒加载链条：避免 multi/refresh 把过滤掉的卡片反复拉回。
+  if ("hasMore" in s.data) s.data.hasMore = false;
+  if ("cursor" in s.data) s.data.cursor = -1;
 }
 
-/** 推荐页增量刷新：与 rcmdResource 同语义但作用于 data 数组。 */
-export function rcmdRefresh(s, { settings }) {
-  if (!Array.isArray(s.data)) return;
-  const allowed = allowedBizCodes(settings);
-  s.data = s.data.filter(i => allowed.includes(i.blockCode));
-  const greeting = s.data.find(i => i.blockCode === "PAGE_RECOMMEND_GREETING");
-  if (greeting?.block?.dslData) {
-    for (const ds of Object.values(greeting.block.dslData)) {
-      cleanGreetingEntries(ds.commonResourceList);
+/**
+ * 推荐页增量刷新：同时兼容
+ *  - 旧结构：{ data: [{ blockCode, block: {...} }, ...] }
+ *  - 新结构：{ data: { blocks: [{ bizCode, ... }], cursor, hasMore } }
+ */
+export function rcmdRefresh(s, ctx) {
+  const allowed = allowedBizCodes(ctx.settings);
+
+  if (Array.isArray(s.data)) {
+    s.data = s.data.filter(i => allowed.includes(i.blockCode));
+    const greeting = s.data.find(i => i.blockCode === "PAGE_RECOMMEND_GREETING");
+    if (greeting?.block?.dslData) {
+      for (const ds of Object.values(greeting.block.dslData)) {
+        cleanGreetingEntries(ds.commonResourceList);
+      }
     }
+    return;
   }
+  // 新结构：复用 rcmdResource 逻辑
+  rcmdResource(s, ctx);
 }
