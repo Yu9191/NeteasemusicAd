@@ -6,65 +6,6 @@
   "repo": "https://github.com/Yu9191/NeteasemusicAd",
   "apps": [
     {
-      "id": "WYY_VIP",
-      "name": "伪 VIP",
-      "keys": [
-        "wyy_VipEnabled",
-        "wyy_VipLevel",
-        "wyy_GrowthValue",
-        "wyy_VipExpire"
-      ],
-      "settings": [
-        {
-          "id": "wyy_VipEnabled",
-          "name": "开启伪 VIP",
-          "val": "1",
-          "type": "selects",
-          "items": [
-            { "key": "1", "label": "开启" },
-            { "key": "0", "label": "关闭" }
-          ],
-          "desc": "关闭后所有 VIP 接口透传原响应"
-        },
-        {
-          "id": "wyy_VipLevel",
-          "name": "VIP 等级",
-          "val": "7",
-          "type": "selects",
-          "items": [
-            { "key": "1", "label": "LV1" },
-            { "key": "2", "label": "LV2" },
-            { "key": "3", "label": "LV3" },
-            { "key": "4", "label": "LV4" },
-            { "key": "5", "label": "LV5" },
-            { "key": "6", "label": "LV6" },
-            { "key": "7", "label": "LV7 (满级)" }
-          ],
-          "desc": "伪造的 VIP 等级 1-7"
-        },
-        {
-          "id": "wyy_GrowthValue",
-          "name": "成长值",
-          "val": 99999,
-          "type": "number",
-          "desc": "VIP 成长值显示 (默认 99999)"
-        },
-        {
-          "id": "wyy_VipExpire",
-          "name": "VIP 到期时间",
-          "val": "2099-09-09",
-          "type": "text",
-          "desc": "支持日期 (2099-09-09 / 2099/09/09 23:59:59) 或毫秒时间戳；留空 → 默认 2099-09-09"
-        }
-      ],
-      "author": "@ios151",
-      "repo": "https://github.com/Yu9191/NeteasemusicAd",
-      "icons": [
-        "https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png",
-        "https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png"
-      ]
-    },
-    {
       "id": "WYY_BOTTOM_TAB",
       "name": "底部 Tab",
       "keys": [
@@ -177,14 +118,36 @@
       "id": "WYY_TOP_TAB",
       "name": "顶部 Tab",
       "keys": [
-        "wyy_AIXG",
+        "wyy_XD",
+        "wyy_BK",
+        "wyy_TS",
         "wyy_HDTAB"
       ],
       "settings": [
         {
-          "id": "wyy_AIXG",
-          "name": "AI 写歌",
-          "val": "0",
+          "id": "wyy_XD",
+          "name": "心动",
+          "val": "1",
+          "type": "selects",
+          "items": [
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
+          ]
+        },
+        {
+          "id": "wyy_BK",
+          "name": "播客",
+          "val": "1",
+          "type": "selects",
+          "items": [
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
+          ]
+        },
+        {
+          "id": "wyy_TS",
+          "name": "听书",
+          "val": "1",
           "type": "selects",
           "items": [
             { "key": "0", "label": "隐藏" },

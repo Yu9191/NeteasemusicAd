@@ -1,12 +1,16 @@
 /**
- * 顶部 Tab 过滤。AIXG=1 才显示 AI 写歌；HDTAB=1 才显示活动 Tab；清空 adminList。
+ * 顶部 Tab 过滤。XD/BK/TS=1 才显示 心动/播客/听书；HDTAB=1 才显示活动 Tab；清空 adminList。
  */
 export function topTab(s, { settings }) {
   if (s.data?.commonResourceList) {
-    const showAIXG = settings.AIXG === 1;
+    const showXD = settings.XD === 1;
+    const showBK = settings.BK === 1;
+    const showTS = settings.TS === 1;
     const showHDTAB = settings.HDTAB === 1;
     s.data.commonResourceList = s.data.commonResourceList.filter(i => {
-      if (i.resCode === "ai-generate-song" && !showAIXG) return false;
+      if (i.resCode === "fastPlay" && !showXD) return false;
+      if (i.resCode === "podcast" && !showBK) return false;
+      if (i.resCode === "vBook" && !showTS) return false;
       if (i.trp_type === "musicTopTabIntervene" && !showHDTAB) return false;
       return true;
     });

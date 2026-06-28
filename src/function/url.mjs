@@ -4,7 +4,7 @@
 
 /** 从 eapi/api URL 提取 API 路径，例如 /eapi/batch → /batch。 */
 export function extractPath(url) {
-  const m = url.match(/(?:^https?:\/\/[^\/]+)\/(?:e?api)(\/[a-z0-9-/]+)(\?.*)?/);
+  const m = url.match(/(?:^https?:\/\/[^\/]+)\/(?:x?e?api)(\/[a-z0-9-/]+)(\?.*)?/);
   return m ? m[1] : null;
 }
 
