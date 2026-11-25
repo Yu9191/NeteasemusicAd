@@ -1,3 +1,5 @@
+import { cleanComment } from "./comment.mjs";
+
 /**
  * 批量接口。清评论 tips、社交事件广告、ad/get 广告位；
  * 评论列表脱敏（关注/VIP 标识/挂件）；清 feed 推荐、话题列表、付费下载入口。
@@ -10,19 +12,7 @@ export function batch(s) {
   clearData("/api/social/event/bff/ad/resources");
   clearData("/api/ad/get", { code: 200, ads: {} });
 
-  for (const c of s["/api/v2/resource/comments"]?.data?.comments ?? []) {
-    if (c.user?.followed === false) c.user.followed = true;
-    if (c.user) {
-      c.user.vipRights = null;
-      c.user.avatarDetail = null;
-    }
-    c.userBizLevels = null;
-    c.pendantData = null;
-    if (c.tag) {
-      c.tag.extDatas = [];
-      c.tag.contentPicDatas = null;
-    }
-  }
+  for (const c of s["/api/v2/resource/comments"]?.data?.comments ?? []) cleanComment(c);
 
   const insKey = "/api/comment/feed/inserted/resources";
   if (s[insKey]?.data) {

@@ -119,6 +119,7 @@
       "name": "顶部 Tab",
       "keys": [
         "wyy_XD",
+        "wyy_YY",
         "wyy_BK",
         "wyy_TS",
         "wyy_HDTAB"
@@ -135,9 +136,19 @@
           ]
         },
         {
+          "id": "wyy_YY",
+          "name": "音乐",
+          "val": "0",
+          "type": "selects",
+          "items": [
+            { "key": "0", "label": "隐藏" },
+            { "key": "1", "label": "显示" }
+          ]
+        },
+        {
           "id": "wyy_BK",
           "name": "播客",
-          "val": "1",
+          "val": "0",
           "type": "selects",
           "items": [
             { "key": "0", "label": "隐藏" },
@@ -147,7 +158,7 @@
         {
           "id": "wyy_TS",
           "name": "听书",
-          "val": "1",
+          "val": "0",
           "type": "selects",
           "items": [
             { "key": "0", "label": "隐藏" },

@@ -22,6 +22,18 @@ https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.lpx
 
 https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.boxjs.json
 
+## App 内设置
+
+安装后，网易云音乐侧边栏里原来的「AI写歌」入口会变成「去广告设置」。点进去就能直接开关底部 / 顶部 Tab 和首页卡片、给底部 / 顶部 Tab 改名、调整它们的左右顺序，修改自动保存，不用再打开 BoxJS 或到模块里改参数。
+
+页面里保存的值与 BoxJS 共用，优先级最高；点「恢复默认」即可回到模块 / 插件里的默认参数。
+
+<p align="center">
+  <img src="docs/preview-1.png" width="30%" alt="底部 Tab 设置">
+  <img src="docs/preview-2.png" width="30%" alt="Tab 顺序与顶部 Tab 设置">
+  <img src="docs/preview-3.png" width="30%" alt="首页卡片设置">
+</p>
+
 ## 致敬开源
 
 - 感谢原作者 [@Keywos](https://github.com/Keywos)

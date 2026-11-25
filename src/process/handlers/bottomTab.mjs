@@ -1,4 +1,5 @@
 import { Console } from "@nsnanocat/util";
+import { sortByOrder } from "../../function/order.mjs";
 
 const BOTTOM_TAB_NAMES = {
   MY: "漫游",
@@ -9,7 +10,7 @@ const BOTTOM_TAB_NAMES = {
 };
 
 /**
- * 底部 Tab 过滤与改名。隐藏 MY/DT/FX/GZ/SOU、应用自定义 Tab 名、发现页移除"直播"。
+ * 底部 Tab 过滤、排序与改名。隐藏 MY/DT/FX/GZ/SOU、按 BOTTOM_ORDER 排序、应用自定义 Tab 名、发现页移除"直播"。
  */
 export function bottomTab(s, { settings }) {
   Console.debug(`[WYY/bottomTab] settings: ${JSON.stringify({
@@ -27,15 +28,19 @@ export function bottomTab(s, { settings }) {
 
   // 至少保留 1 个 Tab，避免 UI 崩溃
   const filtered = s.data.commonResourceList.filter(i => !hideTabs.includes(i.title));
-  s.data.commonResourceList = filtered.length > 0
-    ? filtered
-    : s.data.commonResourceList.slice(0, 1);
+  // 顺序按原始标题排（改名在后面），BOTTOM_ORDER 由 App 内设置页保存
+  s.data.commonResourceList = sortByOrder(
+    filtered.length > 0 ? filtered : s.data.commonResourceList.slice(0, 1),
+    settings.BOTTOM_ORDER,
+    i => i.title
+  );
 
   for (const i of s.data.commonResourceList) {
     if (i.title === "首页" && settings.SY_NAME) i.title = settings.SY_NAME;
     if (i.title === "我的" && settings.WD_NAME) i.title = settings.WD_NAME;
     if (i.title === "漫游" && settings.MY_NAME) i.title = settings.MY_NAME;
     if (i.title === "笔记" && settings.DT_NAME) i.title = settings.DT_NAME;
+    if (i.title === "搜索" && settings.SOU_NAME) i.title = settings.SOU_NAME;
     if (i.title === "发现") {
       if (settings.FX_NAME) i.title = settings.FX_NAME;
       if (i.subCommonResourceList) {

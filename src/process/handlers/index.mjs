@@ -8,8 +8,8 @@
 import { batch } from "./batch.mjs";
 import { bottomTab } from "./bottomTab.mjs";
 import { flowPopup } from "./flow.mjs";
-import { cashier, myPageBar, followList, songMore } from "./misc.mjs";
-import { commentFloor } from "./comment.mjs";
+import { cashier, positionResource, followList, songMore } from "./misc.mjs";
+import { commentFloor, commentInserted, commentReplyPreload } from "./comment.mjs";
 import { discovery, homepageBlock, rcmdRefresh, rcmdResource } from "./home.mjs";
 import { topTab } from "./topTab.mjs";
 import { userInfo } from "./userInfo.mjs";
@@ -17,12 +17,14 @@ import { userInfo } from "./userInfo.mjs";
 export const HANDLERS = {
   "/batch": batch,
   "/v2/resource/comment/floor/get": commentFloor,
+  "/resource/comments/reply/preload": commentReplyPreload,
+  "/comment/feed/inserted/resources/combined": commentInserted,
 
   "/v1/user/info": userInfo,
   "/sp/flow/popup/query": flowPopup,
 
   "/vipactivity/app/cashier/setting/get": cashier,
-  "/link/position/show/resource": myPageBar,
+  "/link/position/show/resource": positionResource,
   "/user/follow/users/mixed/get/v2": followList,
   "/song/play/more/list/v2": songMore,
 

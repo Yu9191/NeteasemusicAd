@@ -4,8 +4,13 @@
 export default {
   FX: 0, MY: 1, DT: 0, GZ: 1, SOU: 1,
   MY_NAME: "", DT_NAME: "", FX_NAME: "", SY_NAME: "", WD_NAME: "",
+  // 搜索 Tab 与顶部 Tab 的自定义名称（空 = 原名）；只在 App 内设置页编辑
+  SOU_NAME: "", XD_NAME: "", TJ_NAME: "", YY_NAME: "", BK_NAME: "", TS_NAME: "",
 
-  XD: 1, BK: 1, TS: 1, HDTAB: 0,
+  XD: 1, YY: 0, BK: 0, TS: 0, HDTAB: 0,
+
+  // Tab 顺序（逗号分隔的 id 串，空 = 原顺序）；只在 App 内设置页编辑
+  BOTTOM_ORDER: "", TOP_ORDER: "",
 
   PRGG: 0, PRDRD: 0, PRSCVPT: 0, PRST: 0,
   HMPR: 0, PRRR: 1, PRRK: 0, PRMST: 0, PRCN: 1,
