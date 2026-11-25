@@ -1,9 +1,4 @@
-/**
- * App 内设置页。
- *
- * 侧边栏入口打开 https://music.163.com/wyy-settings，请求阶段由脚本直接返回页面，
- * 页面里的开关通过 /wyy-settings/set 写入持久化存储（键 wyy_<KEY>，与 BoxJS 共用，优先级最高）。
- */
+/** App 内设置页：侧边栏入口打开 /wyy-settings，开关保存到 wyy_<KEY>（与 BoxJS 共用，优先级最高）。 */
 import { $app, Storage } from "@nsnanocat/util";
 import database from "../database.mjs";
 import setENV from "../function/setENV.mjs";
@@ -11,17 +6,13 @@ import { parseOrder } from "../function/order.mjs";
 
 export const SETTINGS_PATH = "/wyy-settings";
 const SETTINGS_URL = `https://music.163.com${SETTINGS_PATH}`;
-/** 侧边栏入口：与同一侧边栏里「商城」等服务项一样，用 orpheus://openurl 在 App 内网页打开。 */
+/** 侧边栏入口（同「商城」等服务项，用 orpheus://openurl 在 App 内打开）。 */
 export const SETTINGS_ENTRY = {
   name: "去广告设置",
   url: `orpheus://openurl?url=${encodeURIComponent(SETTINGS_URL)}`
 };
 
-/**
- * 设置项分组。[键, 显示名]。
- * - 默认为开关（开 = 1）；text=true 为文本框；
- * - order=键 为排序列表：items 的原始顺序即默认顺序，值为逗号分隔的 id 串（空 = 默认顺序）。
- */
+/** 设置项分组 [键, 显示名]：默认开关（开=1）；text=文本框；order=排序列表（值为逗号分隔的 id，空=默认顺序）。 */
 const GROUPS = [
   {
     title: "底部 Tab",
@@ -68,7 +59,7 @@ const GROUPS = [
   }
 ];
 
-/** 键 → { kind: switch | text | order, allowed?: 排序列表允许的 id }。 */
+/** 键 → { kind: switch | text | order, allowed? }。 */
 const FIELDS = new Map(
   GROUPS.flatMap(g =>
     g.order
@@ -82,8 +73,7 @@ const NAME_MAX = 16;
 const esc = s =>
   String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-// 注意：iOS 对字号 < 16px 的输入框聚焦时会自动放大整个页面，所以文本框的字号必须是 16px，
-// 再用 scale(.8) 缩回到原生页面「值」文字的观感（约 12.8px），宽度同步放大 1/.8 抵消缩小。
+// iOS 对 <16px 的输入框聚焦会自动放大页面：字号取 16px，再 scale(.8) 回到原生观感。
 const CSS = `
 :root{color-scheme:light dark;--bg:#f2f6fc;--card:#fff;--text:#0c0d18;--sub:#89898b;--hd:#737375;--val:#939393;--line:#f1f1f1;--on:#fe393e;--off:#c5c4c7;--chip:#f2f6fc}
 @media(prefers-color-scheme:dark){:root{--bg:#0d0e10;--card:#1b1c1f;--text:#f2f2f4;--sub:#8b8b90;--hd:#8b8b90;--val:#8b8b90;--line:#2a2b2e;--off:#48484d;--chip:#2a2b2e}}
@@ -147,7 +137,7 @@ function renderPage(values) {
   return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${SETTINGS_ENTRY.name}</title><style>${CSS}</style></head><body>${sections}<button id="reset">恢复默认</button><div id="t"></div><script>${JS}</script></body></html>`;
 }
 
-/** 解析 URL 的路径与查询参数（不依赖 URL 对象，各平台行为一致）。 */
+/** 解析 URL 的路径与查询参数。 */
 function parseUrl(url) {
   const m = String(url).match(/^https?:\/\/[^/]+(\/[^?#]*)(?:\?([^#]*))?/);
   const query = {};
@@ -171,18 +161,17 @@ const reply = (status, type, body) => ({
 });
 const json = (status, obj) => reply(status, "application/json", JSON.stringify(obj));
 
-/**
- * 删除一项持久化存储，让 setENV 回到默认值。
- * Loon 文档（Script API 5.1）说明 $persistentStore 对空字符串 / 0 / false 的处理不一致，
- * 清除要用 write(null, key)；util 的 Storage.removeItem 在 Loon 上直接返回 false，所以这里自己处理。
- */
+/** 删除存储项。Loon 文档：写空串不可靠，要用 write(null)；Stash 要求值为字符串，不支持 null 时退回写空串。 */
 function clearItem(key) {
-  if ($app === "Quantumult X") $prefs.removeValueForKey(key);
-  else if (typeof $persistentStore !== "undefined") $persistentStore.write(null, key);
-  else Storage.removeItem(key); // Node.js 等无 $persistentStore 的环境
+  if ($app === "Quantumult X") return $prefs.removeValueForKey(key);
+  if (typeof $persistentStore === "undefined") return Storage.removeItem(key); // Node 等
+  try {
+    if ($persistentStore.write(null, key)) return;
+  } catch {}
+  $persistentStore.write("", key); // setENV 忽略空值
 }
 
-/** 校验并规范化要写入的值；不合法返回 null。 */
+/** 校验并规范化写入值，不合法返回 null。 */
 function normalize(field, v) {
   switch (field.kind) {
     case "switch":
@@ -197,10 +186,7 @@ function normalize(field, v) {
   }
 }
 
-/**
- * 请求阶段入口：返回设置页或处理写入。写入接口要求自定义请求头 x-wyy，
- * 避免被别的网页用 <img> / 表单跨站触发。
- */
+/** 请求阶段入口：返回设置页或处理写入；写入需带 x-wyy 头，防跨站触发。 */
 export async function SettingsPage($request) {
   let route;
   try {

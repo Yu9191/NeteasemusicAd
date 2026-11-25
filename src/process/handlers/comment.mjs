@@ -1,7 +1,4 @@
-/**
- * 单条评论去装饰：清 VIP 标识/头像装饰/等级/挂件/附加标签，未关注的强制 followed=true。
- * 评论楼层、批量评论、回复预加载共用。
- */
+/** 单条评论去装饰（楼层、批量评论、回复预加载共用）。 */
 export function cleanComment(c) {
   if (c.user?.followed === false) c.user.followed = true;
   if (c.user) {
@@ -28,20 +25,14 @@ export function commentFloor(s) {
   for (const c of s.data?.comments ?? []) cleanComment(c);
 }
 
-/**
- * 评论回复预加载（新版 /resource/comments/reply/preload）：
- * data.preloadCommentMap 为 { 评论 ID: 回复数组 }，逐条去装饰。
- */
+/** 评论回复预加载：preloadCommentMap（评论 ID → 回复数组）逐条去装饰。 */
 export function commentReplyPreload(s) {
   for (const replies of Object.values(s.data?.preloadCommentMap ?? {})) {
     if (Array.isArray(replies)) replies.forEach(cleanComment);
   }
 }
 
-/**
- * 评论区插入的推荐动态/笔记（新版独立接口 /comment/feed/inserted/resources/combined，
- * 旧版在 /batch 里的 /api/comment/feed/inserted/resources）：清空记录。
- */
+/** 评论区插入的推荐动态：清空记录（旧版在 /batch 里）。 */
 export function commentInserted(s) {
   if (!s.data) return;
   s.data.records = [];

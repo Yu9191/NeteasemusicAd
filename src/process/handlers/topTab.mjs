@@ -1,6 +1,6 @@
 import { sortByOrder } from "../../function/order.mjs";
 
-/** 顶部 Tab 的 resCode → 开关键（设置值为 1 才显示）。推荐（rcmd）恒保留，未登记的 Tab 不动。 */
+/** resCode → 开关键（1 才显示）；推荐恒保留。 */
 const TAB_SWITCH = {
   fastPlay: "XD",
   music: "YY",
@@ -8,7 +8,7 @@ const TAB_SWITCH = {
   vBook: "TS"
 };
 
-/** 顶部 Tab 的 resCode → 自定义名称键（非空则替换显示名）。 */
+/** resCode → 自定义名称键。 */
 const TAB_NAME = {
   fastPlay: "XD_NAME",
   rcmd: "TJ_NAME",
@@ -17,14 +17,10 @@ const TAB_NAME = {
   vBook: "TS_NAME"
 };
 
-/** 始终隐藏的 Tab：福利（激励广告入口）、AI写歌。 */
+/** 始终隐藏：福利、AI写歌。 */
 const ALWAYS_HIDDEN = new Set(["freeListen", "ai-generate-song"]);
 
-/**
- * 顶部 Tab 过滤、排序与改名。XD/YY/BK/TS=1 才显示 心动/音乐/播客/听书；福利、AI写歌恒隐藏；
- * HDTAB=1 才显示活动 Tab；按 TOP_ORDER 排序；按 *_NAME 改名（TOP_ORDER 与 *_NAME 由 App 内设置页保存）；
- * 清空 adminList 与 Tab 上的引导气泡。
- */
+/** 顶部 Tab：过滤、按 TOP_ORDER 排序、按 *_NAME 改名；清空 adminList 与引导气泡。 */
 export function topTab(s, { settings }) {
   if (s.data?.commonResourceList) {
     const shown = s.data.commonResourceList.filter(i => {

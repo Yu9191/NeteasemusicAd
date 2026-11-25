@@ -14,7 +14,11 @@ https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.quanx.conf
 
 https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.lpx
 
-### 其他平台（Stash / Shadowrocket 等）
+### Stash 覆写
+
+https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyy.stoverride
+
+### 其他平台（Shadowrocket 等）
 
 请用 [Script-Hub](https://github.com/Script-Hub-Org/Script-Hub/wiki) 把上面的 `.sgmodule` 转换为目标平台格式后订阅。
 
