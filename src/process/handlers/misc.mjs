@@ -71,12 +71,14 @@ export function positionResource(s) {
   sideBar(s);
 }
 
-/** 关注列表中未回关用户的提示文案。 */
-export function followList(s) {
+/** 关注列表：没回关的用户显示提示（FOLLOW_TIP 开关，FOLLOW_TEXT 文字，空=默认）。 */
+export function followList(s, { settings }) {
+  if (settings.FOLLOW_TIP !== 1) return;
+  const message = settings.FOLLOW_TEXT || "这人没关注你哦";
   for (const r of s.data?.records ?? []) {
     if (r.mutualFollowDay === null) {
       r.showContent = {
-        message: "💢他/她,未关注你",
+        message,
         time: 1e12,
         active: true,
         boxContent: {}

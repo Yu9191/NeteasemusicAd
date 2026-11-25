@@ -12,7 +12,7 @@ export const SETTINGS_ENTRY = {
   url: `orpheus://openurl?url=${encodeURIComponent(SETTINGS_URL)}`
 };
 
-/** 设置项分组 [键, 显示名]：默认开关（开=1）；text=文本框；order=排序列表（值为逗号分隔的 id，空=默认顺序）。 */
+/** 设置项分组 [键, 显示名, 类型?, 占位?]：默认开关（开=1）；text=文本框（整组或单项）；order=排序列表（值为逗号分隔的 id，空=默认顺序）。 */
 const GROUPS = [
   {
     title: "底部 Tab",
@@ -56,6 +56,11 @@ const GROUPS = [
       ["HMPR", "音乐合伙人"], ["PRRR", "雷达歌单"], ["PRRK", "排行榜"], ["PRMST", "推荐专属歌单"],
       ["PRCN", "你的专属歌单"], ["PRPRS", "私房推荐歌曲"], ["PRRSS", "红心相似歌曲"]
     ]
+  },
+  {
+    title: "关注列表",
+    hint: "开启后，没回关你的人会显示提示；文字留空用默认。",
+    items: [["FOLLOW_TIP", "显示「没关注你」提示"], ["FOLLOW_TEXT", "提示文字", "text", "这人没关注你哦"]]
   }
 ];
 
@@ -64,7 +69,7 @@ const FIELDS = new Map(
   GROUPS.flatMap(g =>
     g.order
       ? [[g.order, { kind: "order", allowed: g.items.map(([id]) => id) }]]
-      : g.items.map(([k]) => [k, { kind: g.text ? "text" : "switch" }])
+      : g.items.map(([k, , kind]) => [k, { kind: kind ?? (g.text ? "text" : "switch") }])
   )
 );
 
@@ -113,9 +118,9 @@ save(ul.dataset.order,Array.prototype.map.call(ul.children,function(x){return x.
 var r=document.getElementById("reset"),armed=false;
 r.addEventListener("click",function(){if(!armed){armed=true;r.textContent="再点一次确认恢复默认";setTimeout(function(){armed=false;r.textContent="恢复默认"},3000);return}call("reset",function(ok){if(ok)location.reload();else tip("操作失败")})});`;
 
-function row([key, label], text, values) {
-  const control = text
-    ? `<input type="text" data-k="${key}" maxlength="${NAME_MAX}" placeholder="原名" value="${esc(values[key] ?? "")}">`
+function row([key, label, kind, hint], text, values) {
+  const control = (kind ?? (text ? "text" : "switch")) === "text"
+    ? `<input type="text" data-k="${key}" maxlength="${NAME_MAX}" placeholder="${esc(hint ?? "原名")}" value="${esc(values[key] ?? "")}">`
     : `<input type="checkbox" data-k="${key}"${values[key] === 1 ? " checked" : ""}>`;
   return `<li><span>${esc(label)}</span>${control}</li>`;
 }

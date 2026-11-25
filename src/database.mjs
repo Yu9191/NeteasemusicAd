@@ -12,6 +12,9 @@ export default {
   // Tab 顺序（逗号分隔 id，空=原顺序；仅设置页编辑）
   BOTTOM_ORDER: "", TOP_ORDER: "",
 
+  // 关注列表「没回关」提示：开关 + 文字（空=默认；仅设置页编辑）
+  FOLLOW_TIP: 1, FOLLOW_TEXT: "",
+
   PRGG: 0, PRDRD: 0, PRSCVPT: 0, PRST: 0,
   HMPR: 0, PRRR: 1, PRRK: 0, PRMST: 0, PRCN: 1,
   PRPRS: 1, PRRSS: 1
