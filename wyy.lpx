@@ -12,40 +12,40 @@
 [Argument]
 
 # ===== 底部 Tab (1=隐藏, 0=显示) =====
-FX = switch, false, true, tag=[底部 Tab] 隐藏发现, desc=
-MY = switch, true, false, tag=[底部 Tab] 隐藏漫游, desc=
-DT = switch, false, true, tag=[底部 Tab] 隐藏笔记, desc=
-GZ = switch, true, false, tag=[底部 Tab] 隐藏关注, desc=
-SOU = switch, true, false, tag=[底部 Tab] 隐藏搜索, desc=
-SY_NAME = input, "", tag=[底部 Tab] 首页自定义名称, desc=留空保持原名
-WD_NAME = input, "", tag=[底部 Tab] 我的自定义名称, desc=留空保持原名
-MY_NAME = input, "", tag=[底部 Tab] 漫游自定义名称, desc=留空保持原名
-DT_NAME = input, "", tag=[底部 Tab] 笔记自定义名称, desc=留空保持原名
-FX_NAME = input, "", tag=[底部 Tab] 发现自定义名称, desc=留空保持原名
+FX = switch,false,tag=[底部 Tab] 隐藏发现
+MY = switch,true,tag=[底部 Tab] 隐藏漫游
+DT = switch,false,tag=[底部 Tab] 隐藏笔记
+GZ = switch,true,tag=[底部 Tab] 隐藏关注
+SOU = switch,true,tag=[底部 Tab] 隐藏搜索
+SY_NAME = input,"",tag=[底部 Tab] 首页自定义名称,desc=留空保持原名
+WD_NAME = input,"",tag=[底部 Tab] 我的自定义名称,desc=留空保持原名
+MY_NAME = input,"",tag=[底部 Tab] 漫游自定义名称,desc=留空保持原名
+DT_NAME = input,"",tag=[底部 Tab] 笔记自定义名称,desc=留空保持原名
+FX_NAME = input,"",tag=[底部 Tab] 发现自定义名称,desc=留空保持原名
 
 # ===== 顶部 Tab (1=显示, 0=隐藏) =====
-XD = switch, true, false, tag=[顶部 Tab] 心动, desc=
-YY = switch, false, true, tag=[顶部 Tab] 音乐, desc=
-BK = switch, false, true, tag=[顶部 Tab] 播客, desc=
-TS = switch, false, true, tag=[顶部 Tab] 听书, desc=
-HDTAB = switch, false, true, tag=[顶部 Tab] 显示活动 Tab, desc=
+XD = switch,true,tag=[顶部 Tab] 心动
+YY = switch,false,tag=[顶部 Tab] 音乐
+BK = switch,false,tag=[顶部 Tab] 播客
+TS = switch,false,tag=[顶部 Tab] 听书
+HDTAB = switch,false,tag=[顶部 Tab] 显示活动 Tab
 
 # ===== 首页卡片 (开启=显示) =====
-PRGG = switch, false, true, tag=[首页] 问候语, desc=
-PRDRD = switch, false, true, tag=[首页] 每日推荐, desc=
-PRSCVPT = switch, false, true, tag=[首页] 推荐歌单, desc=
-PRST = switch, false, true, tag=[首页] 最近常听, desc=
-HMPR = switch, false, true, tag=[首页] 音乐合伙人, desc=
-PRRR = switch, true, false, tag=[首页] 雷达歌单, desc=
-PRRK = switch, false, true, tag=[首页] 排行榜, desc=
-PRMST = switch, false, true, tag=[首页] 推荐专属歌单, desc=
-PRCN = switch, true, false, tag=[首页] 你的专属歌单, desc=
-PRPRS = switch, true, false, tag=[首页] 私房推荐歌曲, desc=
-PRRSS = switch, true, false, tag=[首页] 红心相似歌曲, desc=
+PRGG = switch,false,tag=[首页] 问候语
+PRDRD = switch,false,tag=[首页] 每日推荐
+PRSCVPT = switch,false,tag=[首页] 推荐歌单
+PRST = switch,false,tag=[首页] 最近常听
+HMPR = switch,false,tag=[首页] 音乐合伙人
+PRRR = switch,true,tag=[首页] 雷达歌单
+PRRK = switch,false,tag=[首页] 排行榜
+PRMST = switch,false,tag=[首页] 推荐专属歌单
+PRCN = switch,true,tag=[首页] 你的专属歌单
+PRPRS = switch,true,tag=[首页] 私房推荐歌曲
+PRRSS = switch,true,tag=[首页] 红心相似歌曲
 
 
 # ===== 调试 =====
-LogLevel = select, "info", "off", "error", "warn", "debug", "all", tag=[调试] 日志级别, desc=排错时切到 debug 可看到 Settings/handler 内部日志
+LogLevel = select,"info","off","error","warn","debug","all",tag=[调试] 日志级别,desc=排错时切到 debug 可看到 Settings/handler 内部日志
 
 [Rule]
 DOMAIN, iadmat.nosdn.127.net, REJECT

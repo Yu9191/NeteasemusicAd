@@ -4,7 +4,7 @@
  * 侧边栏入口打开 https://music.163.com/wyy-settings，请求阶段由脚本直接返回页面，
  * 页面里的开关通过 /wyy-settings/set 写入持久化存储（键 wyy_<KEY>，与 BoxJS 共用，优先级最高）。
  */
-import { Storage } from "@nsnanocat/util";
+import { $app, Storage } from "@nsnanocat/util";
 import database from "../database.mjs";
 import setENV from "../function/setENV.mjs";
 import { parseOrder } from "../function/order.mjs";
@@ -171,6 +171,17 @@ const reply = (status, type, body) => ({
 });
 const json = (status, obj) => reply(status, "application/json", JSON.stringify(obj));
 
+/**
+ * 删除一项持久化存储，让 setENV 回到默认值。
+ * Loon 文档（Script API 5.1）说明 $persistentStore 对空字符串 / 0 / false 的处理不一致，
+ * 清除要用 write(null, key)；util 的 Storage.removeItem 在 Loon 上直接返回 false，所以这里自己处理。
+ */
+function clearItem(key) {
+  if ($app === "Quantumult X") $prefs.removeValueForKey(key);
+  else if (typeof $persistentStore !== "undefined") $persistentStore.write(null, key);
+  else Storage.removeItem(key); // Node.js 等无 $persistentStore 的环境
+}
+
 /** 校验并规范化要写入的值；不合法返回 null。 */
 function normalize(field, v) {
   switch (field.kind) {
@@ -207,12 +218,12 @@ export async function SettingsPage($request) {
     const field = FIELDS.get(k);
     const value = field && normalize(field, v);
     if (value === null || value === undefined) return json(400, { ok: false });
-    Storage.setItem(`wyy_${k}`, value);
+    if (value === "") clearItem(`wyy_${k}`); // 清空名称 = 回到默认，用删除而不是写空串
+    else Storage.setItem(`wyy_${k}`, value);
     return json(200, { ok: true });
   }
   if (sub === "/reset") {
-    // 写空串 = 清除覆盖（setENV 忽略空值）；removeItem 并非所有平台都支持
-    for (const k of FIELDS.keys()) Storage.setItem(`wyy_${k}`, "");
+    for (const k of FIELDS.keys()) clearItem(`wyy_${k}`);
     return json(200, { ok: true });
   }
   return json(404, { ok: false });
