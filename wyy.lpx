@@ -4,7 +4,7 @@
 #!author=Yu9191[https://github.com/Yu9191]
 #!tag=去广告
 #!system=ios
-#!loon_version=3.2.4(787)
+#!loon_version=3.5.1(978)
 #!homepage=https://github.com/Yu9191/NeteasemusicAd
 #!icon=https://raw.githubusercontent.com/Keywos/rule/main/tv/app/144px/Netease.png
 #!date=2026-11-25 00:00:00
@@ -52,6 +52,17 @@ DOMAIN, iadmat.nosdn.127.net, REJECT
 DOMAIN, iadmatapk.nosdn.127.net, REJECT
 DOMAIN, iadmusicmat.music.126.net, REJECT
 DOMAIN, iadmusicmatvideo.music.126.net, REJECT
+
+[Rewrite]
+# 广告接口
+request if ${url} ~= /^https?:\/\/(ipv4|interface\d?)\.music\.163.com\/x?e?api\/ad/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/interface\d?\.music\.163\.com\/[wx]?e?api\/(?:side-bar\/mini-program\/music-service\/account|delivery\/(batch-deliver|deliver)|moment\/tab\/info\/get|yunbei\/account\/entrance\/get)/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/music\.163\.com\/x?eapi\/delivery\/(batch-deliver|deliver)/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/interface\d?\.music\.163\.com\/x?eapi\/(?:resource\/comments?\/musiciansaid|community\/friends\/fans-group\/artist\/group\/get|user\/sub\/artist|music\/songshare\/text\/recommend\/get|mine\/applet\/redpoint|resniche\/position\/play\/new\/get)/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/interface\d?\.music\.163.com\/[wx]?e?api\/search\/default/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/interface\d?\.music\.163.com\/[wx]?e?api\/(?:search\/(chart|rcmd\/keyword|specialkeyword)|resource-exposure\/|activity\/bonus\/playpage\/time\/query)/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/interface\d?\.music\.163.com\/x?eapi\/(?:mlivestream\/entrance\/playpage|link\/(position\/show\/strategy|scene\/show)|ios\/version|v\d\/content\/exposure\/comment\/banner)/ then reject_dict(200)
+request if ${url} ~= /^https?:\/\/interface\d?\.music\.163\.com\/store\/x?e?api\/(webconfig|entryconfig)/ then reject_dict(200)
 
 [Script]
 http-response ^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/x?e?api\/(batch|v\d\/resource\/comment\/floor\/get|v1\/user\/info|resource\/comments\/reply\/preload|comment\/feed\/inserted\/resources\/combined) script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js, requires-body=true, binary-body-mode=true, timeout=20, tag=通用 (评论区/广告/红点), argument=LogLevel={LogLevel}
