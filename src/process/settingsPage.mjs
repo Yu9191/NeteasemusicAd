@@ -11,13 +11,10 @@ import { parseOrder } from "../function/order.mjs";
 
 export const SETTINGS_PATH = "/wyy-settings";
 const SETTINGS_URL = `https://music.163.com${SETTINGS_PATH}`;
-/**
- * 侧边栏入口：与同一侧边栏里「商城」等服务项一样，用 orpheus://openurl 在 App 内网页打开；
- * bgcolor 同样沿用那些入口的写法，取原生设置页的背景色，让导航栏与页面底色一致。
- */
+/** 侧边栏入口：与同一侧边栏里「商城」等服务项一样，用 orpheus://openurl 在 App 内网页打开。 */
 export const SETTINGS_ENTRY = {
   name: "去广告设置",
-  url: `orpheus://openurl?url=${encodeURIComponent(SETTINGS_URL)}&bgcolor=f2f6fc`
+  url: `orpheus://openurl?url=${encodeURIComponent(SETTINGS_URL)}`
 };
 
 /**

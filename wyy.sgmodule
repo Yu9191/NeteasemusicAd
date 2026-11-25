@@ -29,7 +29,7 @@
 # 发现页
 网易云音乐_发现 = type=http-response,pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/x?e?api\/link\/page\/discovery\/resource\/show,requires-body=1,max-size=0,timeout=20,binary-body-mode=1,script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js
 
-# 位置资源 (我的页横幅 MyPageBar / 侧边栏 AI写歌 入口改为「去广告设置」)
+# 位置资源 (我的页横幅 MyPageBar / 侧边栏隐藏 AI写歌 并加入「去广告设置」入口)
 网易云音乐_我的 = type=http-response,pattern=^https?:\/\/(ipv4|interface\d?)\.music\.163\.com\/x?e?api\/link\/position\/show\/resource,requires-body=1,max-size=0,timeout=20,binary-body-mode=1,script-path=https://raw.githubusercontent.com/Yu9191/NeteasemusicAd/main/wyyad.js
 
 # 关注列表 (显示未关注)
